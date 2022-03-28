@@ -44,16 +44,16 @@ var IbusEventListenerMID = function (config) {
     function onData(data) {
         if (process.env.LOG_ONLY) {
             if (data.src === process.env.LOG_ONLY || data.dst === process.env.LOG_ONLY) {
-                log.info(clc.yellow('[IbusEventListenerMID] ', JSON.stringify(data)), clc.green(parseInt(data.src, 16)));
+                log.info(clc.yellow('[IbusEventListenerMID] ', JSON.stringify(data)));
             }
         } else {
-            log.info(clc.yellow('[IbusEventListenerMID] ', JSON.stringify(data)), clc.green(parseInt(data.src, 16)));
+            log.info(clc.yellow('[IbusEventListenerMID] ', JSON.stringify(data)));
         }
         
         if (parseInt(data.src, 16) == msgs.devices.radio) { //From radio
             if (parseInt(data.dst, 16) == msgs.devices.cd_changer) { //To CD changer
                 if (tools.compareMsg(data, msgs.messages.rad_cdReqParams) || tools.compare(data, msgs.messages.rad_cdReqPlay)) {
-                   log.info("response");
+                   log.info("Received rad_cdReqPlay");
 			        _self.cdChangerDevice.sendPlaying0101();
                     _self.currentPlaylist.current = _self.currentPlaylist.browseCurrent;
                     _self.currentPlaylist.mode = "play";

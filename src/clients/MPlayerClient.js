@@ -66,19 +66,19 @@ var MPlayerClient = function () {
                 
                 _self.childProc = spawn('mplayer', args);
                 if (_self.childProc !== null) {
-                    log.alert("*** player setup " + " ... " + filename);
+                    log.info("*** player setup " + " ... " + filename);
                     _self.childProc.stdin.write('volume 100 1\n');
                     _self.childProc.stdin.write('loop 0\n');
                 }
                 
                 _self.childProc.on('error', function (error) {
-                    log.alert("*** player Error " + " ... " + filename);
+                    log.error("*** player Error " + " ... " + filename);
                     that.emit('error');
                 });
                 
                 _self.childProc.on('exit', function (code, sig) {
                     if (code === 0 && sig === null) {
-                        log.alert("*** player End " + " ... " + sig + '.' + code);
+                        log.info("*** player End " + " ... " + sig + '.' + code);
                         that.emit('end');
                     }
                 });
@@ -89,7 +89,7 @@ var MPlayerClient = function () {
                 });
             }
             catch (ex) {
-                log.info("retry playing " + " ... " + filename + " - " + e);
+                log.info("retry playing " + " ... " + filename + " - " + ex);
                 _self.play(filename);
             }
         }

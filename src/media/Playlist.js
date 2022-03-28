@@ -1,31 +1,31 @@
 const log = require("log");
 clc = require('cli-color'),
-Config = require('../config.js'),
-fs = require('fs'),
-mime = require('mime'),
-mm = require('musicmetadata'),
-MPlayerClient = require('../clients/MPlayerClient.js'),
-util = require('util'),
-EventEmitter = require("events").EventEmitter;
+    Config = require('../config.js'),
+    fs = require('fs'),
+    mime = require('mime'),
+    mm = require('musicmetadata'),
+    MPlayerClient = require('../clients/MPlayerClient.js'),
+    util = require('util'),
+    EventEmitter = require("events").EventEmitter;
 
 var moduleName = '[Playlist] ';
 
 
 var Playlist = function (config) {
-    
+
     // self reference
     var _self = this;
-    
+
     // exposed data
     this.init = init;
     this.typeName = "";
-    
+
     //menu navigation
     this.up = up;
     this.down = down;
     this.enter = enter;
     this.back = back;
-    
+
     this.play = play;
     this.stop = stop;
     this.pause = pause;
@@ -38,20 +38,20 @@ var Playlist = function (config) {
     this.browseCurrent = {};
     this.queue = queue;
 
-    this.totalMiItems=0;
+    this.totalMiItems = 0;
 
     // MPlayer Client
     _self.mpc = new MPlayerClient();
-    
+
     _self.cfg = config;
-    
+
     //events
     _self.mpc.on('end', onPlayerEnd);
-    
+
     // local data
     this.items = [];
     this.parsingItems = [];
-    
+
     // implementation
     function init(type, startItem) {
         _self.current = startItem;
@@ -59,36 +59,37 @@ var Playlist = function (config) {
         loadFromDisk();
         if (!_self.current) {
             _self.current = getFile();
-	    if(!_self.current){
-	    }
-	    else {
-               log.info(clc.red(_self.current.title1 + " -> " + _self.current.title2));
-	    }
+            if (!_self.current) {
+            }
+            else {
+                log.info(clc.red(_self.current.title1 + " -> " + _self.current.title2));
+            }
         }
+        _self.browseCurrent = _self.current;
         // mpc client startup
         _self.mpc.init();
     }
-    
+
     function onPlayerEnd(data) {
         _self.next();
     }
-    
+
     function info(callback) {
         return _self.mpc.info(callback);
     }
-    
+
     function loadFromDisk() {
         if (_self.typeName == "dir") {
             log.info(clc.blue("Loading list..."));
-            var plst=null;
-            try{
-                plst=fs.readFileSync("list.txt");
+            var plst = null;
+            try {
+                plst = fs.readFileSync("list.txt");
             }
-            catch (ex){
-                plst=null;
+            catch (ex) {
+                plst = null;
             }
-            if(plst!=null && plst.length>0){
-                _self.items=loadItems();
+            if (plst != null && plst.length > 0) {
+                _self.items = loadItems();
                 log.info(clc.blue("Loaded list."));
             }
             else {
@@ -118,7 +119,7 @@ var Playlist = function (config) {
 
         }
     }
-    
+
     function rescan() {
         if (_self.typeName == "dir") {
             loadFiles();
@@ -130,28 +131,28 @@ var Playlist = function (config) {
 
         }
     }
-    
-    function saveItems(items){
+
+    function saveItems(items) {
         fs.writeFileSync("list.txt", JSON.stringify(items));
     }
-    
-    function loadItems(){
-        var fcontent=fs.readFileSync("list.txt");
+
+    function loadItems() {
+        var fcontent = fs.readFileSync("list.txt");
         return JSON.parse(fcontent);
     }
 
-    function addParent(item, parentItem){
-        item.parent=parentItem;
-        if(item.items!==null && item.items.length>0){
+    function addParent(item, parentItem) {
+        item.parent = parentItem;
+        if (item.items !== null && item.items.length > 0) {
             for (var i = item.items.length - 1; i >= 0; i--) {
                 addParent(item.items[i], item);
             };
         }
     }
 
-    function clearParent(item){
-        item.parent=null;
-        if(item.items!==null && item.items.length>0){
+    function clearParent(item) {
+        item.parent = null;
+        if (item.items !== null && item.items.length > 0) {
             for (var i = item.items.length - 1; i >= 0; i--) {
                 clearParent(item.items[i]);
             };
@@ -161,12 +162,12 @@ var Playlist = function (config) {
     function loadFiles(parentItem, path) {
         if (!parentItem) { _self.items = []; }
         if (!path) { path = _self.cfg.mediaPath; }
-        
+
         var d = path.split('/');
         var previousDir = d[d.length - 1];
         var dirs = fs.readdirSync(path);
         var counter = 0;
-        
+
         for (var i = 0; i < dirs.length; i++) {
             var cdir = dirs[i];
             if (cdir != 'System Volume Information') {
@@ -194,7 +195,7 @@ var Playlist = function (config) {
                     loadFiles(mi, mi.filename);
                     addToList = true;
                 }
-                
+
                 if (addToList) {
                     if (!parentItem) {
                         _self.items.push(mi);
@@ -204,50 +205,50 @@ var Playlist = function (config) {
                     }
                     counter++;
                 }
-                
-                if (!_self.current && mi.items == null && stats.isFile() /* && mi.title1 == '03-amy_winehouse-me_and_mr_jones' */ ) {
+
+                if (!_self.current && mi.items == null && stats.isFile() /* && mi.title1 == '03-amy_winehouse-me_and_mr_jones' */) {
                     _self.current = mi;
-                    log.info(_self.current);
+                    log.info('Current track:', _self.current);
                 }
             }
         }
     }
-    
+
     function _logResultMessage(err, msg) {
         if (err) log.error(moduleName + msg);
         log.info(moduleName + msg);
     }
-    
+
     function seek(sec) {
         _self.mpc.seek(sec);
     }
-    
+
     function next() {
         _self.current = getNextItem(_self.current);
         _self.play();
     }
-    
+
     function previous() {
         if (_self.current.parent != null) {
             _self.current = getPreviousItem(_self.current);
             _self.play();
         }
     }
-    
+
     function down() {
         if (!setMode("browse")) {
             browseNext();
             _self.emit('statusUpdate', _self.browseCurrent);
         }
     }
-    
+
     function up() {
         if (!setMode("browse")) {
             browsePrevious();
             _self.emit('statusUpdate', _self.browseCurrent);
         }
     }
-    
+
     function enter() {
         if (!setMode("browse")) {
             if (_self.browseCurrent.items != null) {
@@ -256,7 +257,7 @@ var Playlist = function (config) {
             }
         }
     }
-    
+
     function back() {
         if (!setMode("browse")) {
             if (_self.browseCurrent.parent != null) {
@@ -265,7 +266,7 @@ var Playlist = function (config) {
             }
         }
     }
-    
+
     //returns true if mode is changed
     function setMode(newMode) {
         if (_self.mode !== newMode) {
@@ -281,12 +282,12 @@ var Playlist = function (config) {
         }
         return false;
     }
-    
+
     function browseNext() {
         if (!_self.browseCurrent) {
             _self.browseCurrent = _self.current.parent;
         }
-        
+
         if (!_self.browseCurrent.parent) {
             if (!_self.items[_self.browseCurrent.index + 1]) {
                 _self.browseCurrent = _self.items[0];
@@ -304,12 +305,12 @@ var Playlist = function (config) {
             return _self.browseCurrent;
         }
     }
-    
+
     function browsePrevious() {
         if (!_self.browseCurrent) {
             _self.browseCurrent = _self.current.parent;
         }
-        
+
         if (!_self.browseCurrent.parent) {
             if (!_self.items[_self.browseCurrent.index - 1]) {
                 _self.browseCurrent = _self.items[_self.items.length - 1];
@@ -327,7 +328,7 @@ var Playlist = function (config) {
             return _self.browseCurrent;
         }
     }
-    
+
     function getNextItem(mediaItem) {
         if (mediaItem.parent != null) { //has parent with list this item originated from
             if (!mediaItem.parent.items[mediaItem.index + 1]) { // it's last item in list
@@ -339,7 +340,7 @@ var Playlist = function (config) {
             }
         }
     }
-    
+
     function getPreviousItem(mediaItem) {
         if (mediaItem.parent != null) {
             if (!mediaItem.parent.items[mediaItem.index - 1]) {
@@ -351,7 +352,7 @@ var Playlist = function (config) {
             }
         }
     }
-    
+
     function getNextFolder(parentItem, autoFromParent) {
         if (parentItem.parent != null) {
             if (!parentItem.parent.items[parentItem.index + 1]) {
@@ -376,7 +377,7 @@ var Playlist = function (config) {
         }
         return parentItem;
     }
-    
+
     function getPreviousFolder(parentItem, autoFromParent) {
         if (parentItem.parent != null) {
             if (!parentItem.parent.items[parentItem.index - 1]) {
@@ -401,7 +402,7 @@ var Playlist = function (config) {
         }
         return parentItem;
     }
-    
+
     function getFile(item) {
         if (item == undefined) {
             item = _self.items[0];
@@ -414,7 +415,7 @@ var Playlist = function (config) {
             return getFile(item.items[0]);
         }
     }
-    
+
     function play() {
         _self.current = getFile(_self.current);
         if (!_self.current) {
@@ -426,19 +427,19 @@ var Playlist = function (config) {
             _self.emit('statusUpdate', _self.current);
         }
     }
-    
-    function queue(item){
+
+    function queue(item) {
 
     }
 
     function stop() {
         _self.client.sendCommand(cmd("stop", []), _logResultMessage);
     }
-    
+
     function pause() {
         _self.client.sendCommand(cmd("pause", []), _logResultMessage);
     }
-    
+
     //slow    
     function updateMetaData(listItem) {
         /* { artist : ['Spor'],
@@ -456,7 +457,7 @@ var Playlist = function (config) {
         //log.info(clc.yellow(listItem.filename + " " + _self.totalMiItems));
         if (ft == 'audio/mpeg' || ft == 'audio/x-ms-wma') {
             var parser = mm(fs.createReadStream(listItem.filename), function (err, metadata) {
-                _self.totalMiItems = _self.totalMiItems-1;
+                _self.totalMiItems = _self.totalMiItems - 1;
                 if (err) {
                     log.error(clc.red("filename: " + listItem.filename + " " + err));
                     listItem.parsed = true;
@@ -470,7 +471,7 @@ var Playlist = function (config) {
                 listItem.parsed = true;
 
                 //Save if last item
-                if(_self.totalMiItems==0){
+                if (_self.totalMiItems == 0) {
                     for (var i = _self.items.length - 1; i >= 0; i--) {
                         clearParent(_self.items[i]);
                     };
@@ -484,7 +485,7 @@ var Playlist = function (config) {
                 log.info(_self.totalMiItems + " " + listItem.filename);
             });
         }
-        if(listItem.items!==null && listItem.items.length>0){
+        if (listItem.items !== null && listItem.items.length > 0) {
             for (var i = listItem.items.length - 1; i >= 0; i--) {
                 updateMetaFata(listItem.items[i]);
             };
