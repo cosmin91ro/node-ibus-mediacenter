@@ -31,7 +31,7 @@ if (cluster.isMaster) {
     var cfg = new Config();
     
     // config
-    var device = '/dev/tty.usbserial-1410';
+    var device = process.argv[2];
     
     // communication interface
     var ibusInterface = new IbusInterface(device);

@@ -3,9 +3,9 @@
 var cp = require('child_process'),
     events = require('events'),
     fs = require('fs'),
-    readline = require('readline'),
-    Log = require('log'),
-    log = new Log('info'),
+    readline = require('readline');
+const log = require("log");
+
     spawn = cp.spawn;
 
 function Mplayer(path){

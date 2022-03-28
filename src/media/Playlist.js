@@ -79,7 +79,7 @@ var Playlist = function (config) {
     
     function loadFromDisk() {
         if (_self.typeName == "dir") {
-            log.info(clc.red("Loading list..."));
+            log.info(clc.blue("Loading list..."));
             var plst=null;
             try{
                 plst=fs.readFileSync("list.txt");
@@ -89,19 +89,23 @@ var Playlist = function (config) {
             }
             if(plst!=null && plst.length>0){
                 _self.items=loadItems();
-                log.info(clc.red("Loaded list."));
+                log.info(clc.blue("Loaded list."));
             }
             else {
                 loadFiles();
-                log.info(clc.red("Loaded files."));
-                saveItems(_self.items);
+                log.info(clc.blue("Loaded files:"));
+                log.info(_self.items);
+                if (_self.items.length == 0) {
+                    log.error('No items in media library. Exiting ...');
+                    process.exit(1);
+                }
+                // saveItems(_self.items);
                 _self.parsingItems = JSON.parse(JSON.stringify(_self.items));
                 for (var i = _self.parsingItems.length - 1; i >= 0; i--) {
                     var mi = _self.parsingItems[i];
                     //updateMetaData(mi);
                 };
                 //updateMetaData(mi);
-                log.info(clc.red("Saved list."));
             }
             for (var i = _self.items.length - 1; i >= 0; i--) {
                 addParent(_self.items[i], null);

@@ -1,7 +1,6 @@
-var Log = require('log'),
-    log = new Log('info'),
-    tools = require('../tools.js'),
-    clc = require('cli-color');
+const log = require("log");
+tools = require('../tools.js'),
+clc = require('cli-color');
 
 var MidDevice = function (ibusInterface) {
     

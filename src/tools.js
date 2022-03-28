@@ -1,6 +1,5 @@
-// tools.js
-var Log = require('log'),
-    log = new Log('info');
+const log = require("log");
+
 
 Array.prototype.hexToAscii = function (array) {
     if (!this)

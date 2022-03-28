@@ -17,10 +17,7 @@ function config() {
     }
     catch (ex) {
         cfg = {
-            // mediaPath: "/mnt/usbstick",
-            //mediaPath: "/media/usbstick",
-            //mediaPath: "/media/MP316", 
-            mediaPath: "/Volumes/NO NAME",
+            mediaPath: process.argv[3],
             currentListType: "dir",
             dirCurrent: {},
             plsCurrent: {},

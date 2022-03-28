@@ -1,7 +1,6 @@
-var Log = require('log'),
-    log = new Log('info'),
-    msgs = require('../messages.js'),
-    clc = require('cli-color');
+const log = require("log");
+msgs = require('../messages.js'),
+clc = require('cli-color');
 
 var CDChangerDevice = function (ibusInterface) {
     

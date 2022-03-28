@@ -1,8 +1,7 @@
-var Log = require('log'),
-    log = new Log('info'),
-    clc = require('cli-color'),
-    mpd = require('mpd'),
-    cmd = mpd.cmd;
+const log = require("log");
+clc = require('cli-color'),
+mpd = require('mpd'),
+cmd = mpd.cmd;
 
 var moduleName = '[MpdClient] ';
 

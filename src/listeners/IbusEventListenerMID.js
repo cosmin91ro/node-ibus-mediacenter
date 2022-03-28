@@ -42,7 +42,13 @@ var IbusEventListenerMID = function (config) {
     }
     
     function onData(data) {
-        log.info(clc.yellow('[IbusEventListenerMID] ', JSON.stringify(data)), clc.green(parseInt(data.src, 16)));
+        if (process.env.LOG_ONLY) {
+            if (data.src === process.env.LOG_ONLY || data.dst === process.env.LOG_ONLY) {
+                log.info(clc.yellow('[IbusEventListenerMID] ', JSON.stringify(data)), clc.green(parseInt(data.src, 16)));
+            }
+        } else {
+            log.info(clc.yellow('[IbusEventListenerMID] ', JSON.stringify(data)), clc.green(parseInt(data.src, 16)));
+        }
         
         if (parseInt(data.src, 16) == msgs.devices.radio) { //From radio
             if (parseInt(data.dst, 16) == msgs.devices.cd_changer) { //To CD changer

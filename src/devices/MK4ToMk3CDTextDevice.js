@@ -1,6 +1,5 @@
-var Log = require('log'),
-    log = new Log('info'),
-    clc = require('cli-color');
+const log = require("log");
+clc = require('cli-color');
 
 // Display Mk4 CD-text as Mk3 Options
 var MK4ToMk3CDTextDevice = function(ibusInterface, navOutput) {

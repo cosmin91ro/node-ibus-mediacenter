@@ -1,6 +1,5 @@
-var Log = require('log'),
-    log = new Log('info'),
-    clc = require('cli-color');
+const log = require("log");
+clc = require('cli-color');
 
 var keypress = require('keypress');
 
