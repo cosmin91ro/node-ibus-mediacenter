@@ -1,6 +1,6 @@
 const log = require("log");
+const tools = require("../tools.js");
 clc = require('cli-color'),
-tools = require('../tools.js'),
 msgs = require('../messages.js'),
 Playlist = require('../media/Playlist.js');
 
@@ -44,10 +44,10 @@ var IbusEventListenerMID = function (config) {
     function onData(data) {
         if (process.env.LOG_ONLY) {
             if (data.src === process.env.LOG_ONLY || data.dst === process.env.LOG_ONLY) {
-                log.info(clc.yellow('[IbusEventListenerMID] ', JSON.stringify(data)));
+                tools.logIbusPacket(data);
             }
         } else {
-            log.info(clc.yellow('[IbusEventListenerMID] ', JSON.stringify(data)));
+            tools.logIbusPacket(data);
         }
         
         if (parseInt(data.src, 16) == msgs.devices.radio) { //From radio

@@ -1,4 +1,5 @@
 const log = require("log");
+var IbusDevices = require('ibus').IbusDevices;
 
 
 Array.prototype.hexToAscii = function (array) {
@@ -154,5 +155,12 @@ module.exports = {
             result.push(input.charCodeAt(a).toString(16));
         }
         return result;
+    },
+
+    logIbusPacket: function (pkt) {
+        console.log('[IbusPacketReceived]', 'Id: 	  ', pkt.id);
+        console.log('[IbusPacketReceived]', 'From: 	  ', IbusDevices.getDeviceName(pkt.src));
+        console.log('[IbusPacketReceived]', 'To: 	  ', IbusDevices.getDeviceName(pkt.dst));
+        console.log('[IbusPacketReceived]', 'Message: ', pkt.msg, '\n');
     }
 }
