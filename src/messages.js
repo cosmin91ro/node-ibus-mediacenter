@@ -88,6 +88,10 @@
         cd_sc_press: { src: 0xC0 , dst: 0x68, msg: new Buffer([0x31, 0x40, 0x00, 0x0a]) },
         cd_sc_hold: { src: 0xC0 , dst: 0x68, msg: new Buffer([0x31, 0x40, 0x00, 0x2a]) },
         cd_sc_release: { src: 0xC0 , dst: 0x68, msg: new Buffer([0x31, 0x40, 0x00, 0x4a]) },
+
+        ph7090_arrow_right: { src: 0x68 , dst: 0x18, msg: new Buffer([0x38, 0x0a, 0x00]) },
+        ph7090_arrow_left: { src: 0x68 , dst: 0x18, msg: new Buffer([0x38, 0x0a, 0x01]) },
+
         //Test
         //test: { src: 0x80, dst: 0xe7, msg: new Buffer([0x2a, 0x00, 0x00]) }
     },
@@ -106,3 +110,16 @@
 }
 
 
+/*
+IbusPacketReceived] Id: 	   1648748638336
+[IbusPacketReceived] From: 	   Radio - 68
+[IbusPacketReceived] To: 	   CDChanger - 18
+[IbusPacketReceived] Message:  <Buffer 38 0a 00> - right arrow
+
+
+[IbusPacketReceived] Id: 	   1648748763737
+[IbusPacketReceived] From: 	   Radio - 68
+[IbusPacketReceived] To: 	   CDChanger - 18
+[IbusPacketReceived] Message:  <Buffer 38 0a 01> - left arrow
+
+*/

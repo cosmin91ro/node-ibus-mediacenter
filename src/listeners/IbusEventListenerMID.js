@@ -61,6 +61,11 @@ var IbusEventListenerMID = function (config) {
                 }
                 else if (tools.compareMsg(data, msgs.messages.rad_cdPool)) {
                     _self.cdChangerDevice.respondAsCDplayer();
+                } else if (tools.compareMsg(data, msgs.messages.ph7090_arrow_left)) {
+                    _self.currentPlaylist.previous();
+                }
+                else if (tools.compareMsg(data, msgs.messages.ph7090_arrow_right)) {
+                    _self.currentPlaylist.next();
                 }
             }
             else if (parseInt(data.dst, 16) == msgs.devices.mid) { //To MID
