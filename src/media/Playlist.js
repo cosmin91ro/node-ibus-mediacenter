@@ -224,15 +224,15 @@ var Playlist = function (config) {
     }
 
     function next() {
+        log.info('Looking for next song ...');
         _self.current = getNextItem(_self.current);
         _self.play();
     }
 
     function previous() {
-        if (_self.current.parent != null) {
-            _self.current = getPreviousItem(_self.current);
-            _self.play();
-        }
+        log.info('Looking for previous song ...');
+        _self.current = getPreviousItem(_self.current);
+        _self.play();
     }
 
     function down() {
@@ -330,27 +330,23 @@ var Playlist = function (config) {
     }
 
     function getNextItem(mediaItem) {
-        if (mediaItem.parent != null) { //has parent with list this item originated from
-            if (!mediaItem.parent.items[mediaItem.index + 1]) { // it's last item in list
-                var p = getNextFolder(mediaItem.parent, true);
-                return getFile(p);
-            }
-            else { //return next item
-                return getFile(mediaItem.parent.items[mediaItem.index + 1]);
-            }
-        }
+        const index = mediaItem.index + 1;
+        return _skip(index);
     }
 
     function getPreviousItem(mediaItem) {
-        if (mediaItem.parent != null) {
-            if (!mediaItem.parent.items[mediaItem.index - 1]) {
-                var p = getPreviousFolder(mediaItem.parent, true);
-                return getFile(p);
+        const index = mediaItem.index - 1;
+        return _skip(index);
+    }
+
+    function _skip(index) {
+        if (_self.items[index]){
+            if (_self.items[index].items) { // next item is a folder
+                return getNextItem(_self.items[index]);
+            } else {
+                return getFile(_self.items[index]);
             }
-            else {
-                return getFile(mediaItem.parent.items[mediaItem.index - 1]);
-            }
-        }
+        };
     }
 
     function getNextFolder(parentItem, autoFromParent) {
