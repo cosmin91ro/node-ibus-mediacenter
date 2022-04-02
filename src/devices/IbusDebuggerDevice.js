@@ -76,7 +76,7 @@ var IbusDebuggerDevice = function () {
                 log.info('[IbusDebuggerDevice] ' + msg + "> '" + tools.intToAscii(data.msg.slice()) + "'"); // data);
             }
             //console.log('// ' + data.msg.toString('ascii'));
-            //console.log('ibusInterface.sendMessage({src: 0x' + data.src + ',dst: 0x' + data.dst + ', msg: new Buffer([' + msg.substr(2), '])});');
+            //console.log('ibusInterface.sendMessage({src: 0x' + data.src + ',dst: 0x' + data.dst + ', msg: new Buffer.from([' + msg.substr(2), '])});');
         }
        //log.info('[IbusDebuggerDevice All] ',data.src + '.' + data.dst + '.' + data.msg + ' -> ' + data.msg.toString('ascii')); // data);
    
@@ -94,46 +94,46 @@ var IbusDebuggerDevice = function () {
     
     function simulateButton1() {
         //C0 06 68 31 40 00 00 - radio button 1 press
-        _self.ibusInterface.sendMessage(msgs.messages.radio_1_press);
+        _self.ibusInterface.sendMessage(msgs.messages.mid_1_press);
     }
     
     function simulateButton2() {
         //C0 06 68 31 40 00 01 - radio button 2 press
-        _self.ibusInterface.sendMessage(msgs.messages.radio_2_press);
+        _self.ibusInterface.sendMessage(msgs.messages.mid_2_press);
     }
     
     function simulateButton3() {
         //C0 06 68 31 40 00 02 - radio button 3 press
-        _self.ibusInterface.sendMessage(msgs.messages.radio_3_press);
+        _self.ibusInterface.sendMessage(msgs.messages.mid_3_press);
     }
     
     function simulateButton4() {
-        _self.ibusInterface.sendMessage(msgs.messages.radio_4_press);
+        _self.ibusInterface.sendMessage(msgs.messages.mid_4_press);
     }
     
     function simulateButton5() {
         //C0 06 68 31 40 00 04 - radio button 5
-        _self.ibusInterface.sendMessage(msgs.messages.radio_5_press);
+        _self.ibusInterface.sendMessage(msgs.messages.mid_5_press);
     }
     
     function simulateButton6() {
         //C0 06 68 31 40 00 05 - radio button 6
-        _self.ibusInterface.sendMessage(msgs.messages.radio_6_press);
+        _self.ibusInterface.sendMessage(msgs.messages.mid_6_press);
     }
 
     function simulateREV() {
         //C0 06 68 31 00 00 0C - radio REV press
-        _self.ibusInterface.sendMessage(msgs.messages.radio_rev_press);
+        _self.ibusInterface.sendMessage(msgs.messages.mid_rev_press);
     }
     
     function simulateFF() {
         //C0 06 68 31 00 00 0C - radio REV press
-        _self.ibusInterface.sendMessage(msgs.messages.radio_ff_press);
+        _self.ibusInterface.sendMessage(msgs.messages.mid_ff_press);
     }
 
     function simulateM() {
         //C0 06 68 31 00 00 0E - radio m press
-        _self.ibusInterface.sendMessage(msgs.messages.radio_m_press);
+        _self.ibusInterface.sendMessage(msgs.messages.mid_m_press);
     }
     
     function simulateMflPrev() {

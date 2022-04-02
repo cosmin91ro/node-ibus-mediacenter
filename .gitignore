@@ -2,3 +2,5 @@ node_modules
 .vscode
 list.txt
 config.json
+status
+test

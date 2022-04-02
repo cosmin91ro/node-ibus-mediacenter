@@ -93,7 +93,7 @@ var MPlayerClient = function () {
                 _self.play(filename);
             }
         }
-        log.info("playing " + " ... " + filename);
+        log.info("[MPlayerClient] playing " + " ... " + filename);
     }
     
     function pause() {

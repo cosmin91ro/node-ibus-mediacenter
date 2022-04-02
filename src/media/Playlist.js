@@ -1,4 +1,6 @@
 const log = require("log");
+const path = require('path');
+
 clc = require('cli-color'),
     Config = require('../config.js'),
     fs = require('fs'),
@@ -37,6 +39,7 @@ var Playlist = function (config) {
     this.mode = "play"; //play, browse, search
     this.browseCurrent = {};
     this.queue = queue;
+    this.loadFiles = loadFiles;
 
     this.totalMiItems = 0;
 
@@ -79,6 +82,18 @@ var Playlist = function (config) {
     }
 
     function loadFromDisk() {
+        var cd = 'CD1';
+        var track = 1;
+        const statusFile = 'status';
+        if (fs.existsSync(statusFile)) {
+            var status = fs.readFileSync(statusFile, 'utf-8').replace('\n', '');
+            const parts = status.split('-');
+            if (parts && parts.length === 2) {
+                cd = parts[0];
+                track = parseInt(parts[1]);
+            }
+        }
+
         if (_self.typeName == "dir") {
             log.info(clc.blue("Loading list..."));
             var plst = null;
@@ -93,20 +108,23 @@ var Playlist = function (config) {
                 log.info(clc.blue("Loaded list."));
             }
             else {
-                loadFiles();
-                log.info(clc.blue("Loaded files:"));
-                log.info(_self.items);
+                loadFiles(null, cd, track);
+                log.info(clc.blue("Files loaded"));
+                log.debug(_self.items);
                 if (_self.items.length == 0) {
                     log.error('No items in media library. Exiting ...');
                     process.exit(1);
                 }
-                // saveItems(_self.items);
+        
+                if (!_self.current) {
+                    _self.current = _self.items[0];
+                }
+                log.info('Current track:', _self.current);
+
                 _self.parsingItems = JSON.parse(JSON.stringify(_self.items));
                 for (var i = _self.parsingItems.length - 1; i >= 0; i--) {
                     var mi = _self.parsingItems[i];
-                    //updateMetaData(mi);
                 };
-                //updateMetaData(mi);
             }
             for (var i = _self.items.length - 1; i >= 0; i--) {
                 addParent(_self.items[i], null);
@@ -159,57 +177,48 @@ var Playlist = function (config) {
         }
     }
 
-    function loadFiles(parentItem, path) {
-        if (!parentItem) { _self.items = []; }
-        if (!path) { path = _self.cfg.mediaPath; }
+    function loadFiles(itemPath, cd, track) {
+        if (cd)
+        log.info(`Loading songs from ${cd}`);
+        _self.items = [];
+        if (!itemPath) { itemPath = _self.cfg.mediaPath; }
 
-        var d = path.split('/');
+        var d = itemPath.split('/');
         var previousDir = d[d.length - 1];
-        var dirs = fs.readdirSync(path);
+        var dirsAndFiles = fs.readdirSync(itemPath);
         var counter = 0;
 
-        for (var i = 0; i < dirs.length; i++) {
-            var cdir = dirs[i];
-            if (cdir != 'System Volume Information') {
-                var mi = {
-                    index: counter,
-                    title1: cdir.replace('.mp3', ''),
-                    title2: previousDir,
-                    filename: path + '/' + cdir,
-                    items: [],
-                    parent: null, // parentItem,
-                    parsed: false,
-                };
-                _self.totalMiItems++;
+        for (var i = 0; i < dirsAndFiles.length; i++) {
+            var currentDirOrFile = dirsAndFiles[i];
+            var mi = {
+                index: counter,
+                title1: currentDirOrFile.replace('.mp3', ''),
+                title2: previousDir,
+                filename: path.join(itemPath, currentDirOrFile),
+                items: [],
+                parent: null,
+                parsed: false,
+            };
 
-                var addToList = false;
-                var stats = fs.lstatSync(mi.filename);
-                if (stats.isFile()) {
-                    var ft = mime.lookup(mi.filename);
-                    if (ft == 'audio/mpeg' || ft == 'audio/x-ms-wma') {
-                        mi.items = null;
-                        addToList = true;
-                    }
-                }
-                else if (stats.isDirectory()) {
-                    loadFiles(mi, mi.filename);
+            if (cd && currentDirOrFile === cd && fs.lstatSync(mi.filename).isDirectory) {
+                loadFiles(mi.filename, null, track);
+            }
+
+            var addToList = false;
+            var stats = fs.lstatSync(mi.filename);
+            if (stats.isFile()) {
+                var ft = mime.lookup(mi.filename);
+                if (ft == 'audio/mpeg' || ft == 'audio/x-ms-wma') {
+                    mi.items = null;
                     addToList = true;
                 }
+            }
 
-                if (addToList) {
-                    if (!parentItem) {
-                        _self.items.push(mi);
-                    }
-                    else {
-                        parentItem.items.push(mi);
-                    }
-                    counter++;
-                }
-
-                if (!_self.current && mi.items == null && stats.isFile() /* && mi.title1 == '03-amy_winehouse-me_and_mr_jones' */) {
-                    _self.current = mi;
-                    log.info('Current track:', _self.current);
-                }
+            if (addToList) {
+                _self.items.push(mi);
+                if (track && track === mi.index + 1)
+                    _self.current = mi; 
+                counter++;
             }
         }
     }
@@ -330,17 +339,21 @@ var Playlist = function (config) {
     }
 
     function getNextItem(mediaItem) {
-        const index = mediaItem.index + 1;
-        return _skip(index);
+        var newIndex = mediaItem.index + 1;
+        if (mediaItem.index === _self.items.length - 1)
+            newIndex = 0;
+        return _skip(newIndex);
     }
 
     function getPreviousItem(mediaItem) {
-        const index = mediaItem.index - 1;
-        return _skip(index);
+        var newIndex = mediaItem.index - 1;
+        if (mediaItem.index === 0)
+            newIndex = _self.items.length - 1;
+        return _skip(newIndex);
     }
 
     function _skip(index) {
-        if (_self.items[index]){
+        if (_self.items[index]) {
             if (_self.items[index].items) { // next item is a folder
                 return getNextItem(_self.items[index]);
             } else {
@@ -418,7 +431,6 @@ var Playlist = function (config) {
             log.error("player: no file" + _self.current);
         }
         else {
-            //_self.current = getFile(_self.current);
             _self.mpc.play(_self.current.filename);
             _self.emit('statusUpdate', _self.current);
         }

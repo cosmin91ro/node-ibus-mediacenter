@@ -34,7 +34,7 @@ var GraphicsNavigationOutputDevice = function(ibusInterface) {
         ibusInterface.sendMessage({
             src: 0x68,
             dst: 0x3b,
-            msg: new Buffer([0xA5, 0x62, 0x01])
+            msg: new Buffer.from([0xA5, 0x62, 0x01])
         });        
     }
 
@@ -42,7 +42,7 @@ var GraphicsNavigationOutputDevice = function(ibusInterface) {
         ibusInterface.sendMessage({
             src: 0x68,
             dst: 0x3b,
-            msg: new Buffer([0xa5, 0x60, 0x01, 0x00])
+            msg: new Buffer.from([0xa5, 0x60, 0x01, 0x00])
         });
     }
 
@@ -50,7 +50,7 @@ var GraphicsNavigationOutputDevice = function(ibusInterface) {
         ibusInterface.sendMessage({
             src: 0x68,
             dst: 0x3b,
-            msg: new Buffer([0xa5, 0x62, 0x01, 0x00])
+            msg: new Buffer.from([0xa5, 0x62, 0x01, 0x00])
         });
     }
 
@@ -58,7 +58,7 @@ var GraphicsNavigationOutputDevice = function(ibusInterface) {
         ibusInterface.sendMessage({
             src: 0x68,
             dst: 0x3b,
-            msg: new Buffer([0xA5, 0x62, 0x01, 0x06])
+            msg: new Buffer.from([0xA5, 0x62, 0x01, 0x06])
         });
     }
 
@@ -66,7 +66,7 @@ var GraphicsNavigationOutputDevice = function(ibusInterface) {
         ibusInterface.sendMessage({
             src: 0x68,
             dst: 0x3b,
-            msg: Buffer.concat([new Buffer([0x23, 0x62, 0x10]), getPaddedLenBuf(text, 11)])
+            msg: Buffer.concat([new Buffer.from([0x23, 0x62, 0x10]), getPaddedLenBuf(text, 11)])
         });
     }
 
@@ -81,7 +81,7 @@ var GraphicsNavigationOutputDevice = function(ibusInterface) {
         ibusInterface.sendMessage({
             src: 0x68,
             dst: 0x3b,
-            msg: Buffer.concat([new Buffer([0x21, 0x60, 0x00, indexCode]), getPaddedLenBuf(text, 14)])
+            msg: Buffer.concat([new Buffer.from([0x21, 0x60, 0x00, indexCode]), getPaddedLenBuf(text, 14)])
         });
     }
 
@@ -105,7 +105,7 @@ var GraphicsNavigationOutputDevice = function(ibusInterface) {
         ibusInterface.sendMessage({
             src: 0x68,
             dst: 0x3b,
-            msg: Buffer.concat([new Buffer([0xa5, 0x62, 0x01, indexCode]), getPaddedLenBuf(text, len)])
+            msg: Buffer.concat([new Buffer.from([0xa5, 0x62, 0x01, indexCode]), getPaddedLenBuf(text, len)])
         });
     }
 

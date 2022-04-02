@@ -79,7 +79,7 @@ module.exports = {
     },
     
     compareify: function (src, dst, msg) {
-        var r = Buffer.concat([new Buffer([parseInt(src, 16), parseInt(dst, 16)]), msg]);
+        var r = Buffer.concat([new Buffer.from([parseInt(src, 16), parseInt(dst, 16)]), msg]);
         
         //console.log(r, '/', src , '/', dst, '/', msg);
         
@@ -92,8 +92,8 @@ module.exports = {
     
     //Convert data to hex and compare with message
     compare: function (data, message) {
-        var b1 = Buffer.concat([new Buffer([parseInt(data.src, 16), parseInt(data.dst, 16)]), data.msg]);
-        var b2 = Buffer.concat([new Buffer([message.src, message.dst]), message.msg]);
+        var b1 = Buffer.concat([new Buffer.from([parseInt(data.src, 16), parseInt(data.dst, 16)]), data.msg]);
+        var b2 = Buffer.concat([new Buffer.from([message.src, message.dst]), message.msg]);
         return b1.equals(b2);
     },
     

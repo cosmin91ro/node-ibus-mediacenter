@@ -3,6 +3,7 @@ const tools = require("../tools.js");
 clc = require('cli-color'),
 msgs = require('../messages.js'),
 Playlist = require('../media/Playlist.js');
+fs = require('fs');
 
 var IbusEventListenerMID = function (config) {
     
@@ -37,8 +38,19 @@ var IbusEventListenerMID = function (config) {
     function onStatusUpdate(data) {
         _self.title1 = data.title1;
         _self.title2 = data.title2;
-        log.info(clc.yellow(_self.title1 + " -> " + _self.title2));
+        log.info(clc.yellow(`Playing ${data.title2} - track ${data.index + 1}`));
         log.info(JSON.stringify(data));
+        writeStatus(data);
+    }
+
+    function writeStatus(status) {
+        const statusFile = 'status';
+        const st = `${status.title2}-${status.index + 1}`;
+        fs.writeFile(statusFile, st, function (err) {
+            if (err) 
+                log.error(`Could not save status to file: ${err}`);
+            });
+        console.info(`Status ${st} written to file`);
     }
     
     function onData(data) {
@@ -54,7 +66,7 @@ var IbusEventListenerMID = function (config) {
             if (parseInt(data.dst, 16) == msgs.devices.cd_changer) { //To CD changer
                 if (tools.compareMsg(data, msgs.messages.rad_cdReqParams) || tools.compare(data, msgs.messages.rad_cdReqPlay)) {
                    log.info("Received rad_cdReqPlay");
-			        _self.cdChangerDevice.sendPlaying0101();
+			        // _self.cdChangerDevice.sendPlaying0101();
                     _self.currentPlaylist.current = _self.currentPlaylist.browseCurrent;
                     _self.currentPlaylist.mode = "play";
                     _self.currentPlaylist.play();
@@ -63,9 +75,20 @@ var IbusEventListenerMID = function (config) {
                     _self.cdChangerDevice.respondAsCDplayer();
                 } else if (tools.compareMsg(data, msgs.messages.ph7090_arrow_left)) {
                     _self.currentPlaylist.previous();
-                }
-                else if (tools.compareMsg(data, msgs.messages.ph7090_arrow_right)) {
+                } else if (tools.compareMsg(data, msgs.messages.ph7090_arrow_right)) {
                     _self.currentPlaylist.next();
+                } else if (tools.compareMsg(data, msgs.messages.ph7090_1_press)) {
+                    _self.currentPlaylist.loadFiles(null, 'CD1', 1);
+                } else if (tools.compareMsg(data, msgs.messages.ph7090_2_press)) {
+                    _self.currentPlaylist.loadFiles(null, 2, 1);
+                } else if (tools.compareMsg(data, msgs.messages.ph7090_3_press)) {
+                    _self.currentPlaylist.loadFiles(null, 3, 1);
+                } else if (tools.compareMsg(data, msgs.messages.ph7090_4_press)) {
+                    _self.currentPlaylist.loadFiles(null, 4, 1);
+                } else if (tools.compareMsg(data, msgs.messages.ph7090_5_press)) {
+                    _self.currentPlaylist.loadFiles(null, 5, 1);
+                } else if (tools.compareMsg(data, msgs.messages.ph7090_6_press)) {
+                    _self.currentPlaylist.loadFiles(null, 6, 1);
                 }
             }
             else if (parseInt(data.dst, 16) == msgs.devices.mid) { //To MID
@@ -85,33 +108,33 @@ var IbusEventListenerMID = function (config) {
         }
         else if (parseInt(data.src, 16) == msgs.devices.mid) { //From MID
             if (parseInt(data.dst, 16) == msgs.devices.radio) { //To radio
-                if (tools.compareMsg(data, msgs.messages.radio_1_press)) {
+                if (tools.compareMsg(data, msgs.messages.mid_1_press)) {
                     _self.currentPlaylist.up();
                 }
-                else if (tools.compareMsg(data, msgs.messages.radio_2_press)) {
+                else if (tools.compareMsg(data, msgs.messages.mid_2_press)) {
                     _self.currentPlaylist.down();
                 }
-                else if (tools.compareMsg(data, msgs.messages.radio_3_press)) {
+                else if (tools.compareMsg(data, msgs.messages.mid_3_press)) {
                     _self.currentPlaylist.enter();
                 }
-                else if (tools.compareMsg(data, msgs.messages.radio_4_press)) {
+                else if (tools.compareMsg(data, msgs.messages.mid_4_press)) {
                     _self.currentPlaylist.back();
                 }
-                else if (tools.compareMsg(data, msgs.messages.radio_5_press)) {
+                else if (tools.compareMsg(data, msgs.messages.mid_5_press)) {
                     _self.currentPlaylist.current = _self.currentPlaylist.browseCurrent;
                     _self.currentPlaylist.mode = "play";
                     _self.currentPlaylist.play();
                 }
-                else if (tools.compareMsg(data, msgs.messages.radio_6_press)) {
+                else if (tools.compareMsg(data, msgs.messages.mid_6_press)) {
                     _self.currentPlaylist.queue(_self.currentPlaylist.browseCurrent);
                 }
-                else if (tools.compareMsg(data, msgs.messages.radio_rev_press)) {
+                else if (tools.compareMsg(data, msgs.messages.mid_rev_press)) {
                     _self.currentPlaylist.seek(-10);
                 }
-                else if (tools.compareMsg(data, msgs.messages.radio_ff_press)) {
+                else if (tools.compareMsg(data, msgs.messages.mid_ff_press)) {
                     _self.currentPlaylist.seek(10);
                 }
-                else if (tools.compareMsg(data, msgs.messages.radio_m_press)) {
+                else if (tools.compareMsg(data, msgs.messages.mid_m_press)) {
                     _self.currentPlaylist.currentTime(function (data) {
                         log.info("............." + data);
                     });

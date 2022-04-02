@@ -24,7 +24,6 @@ if (cluster.isMaster) {
     var MidDevice = require('./devices/MidDevice.js');
     var IkeDevice = require('./devices/IkeDevice.js');
     var IbusDebuggerDevice = require('./devices/IbusDebuggerDevice.js');
-    //var KeyboardEventListener = require('./listeners/KeyboardEventListener.js');
 
     var IbusEventListenerMID = require('./listeners/IbusEventListenerMID.js');
     
@@ -50,14 +49,10 @@ if (cluster.isMaster) {
     
     // Ibus MID Event Client
     var ibusEventClientMID = new IbusEventListenerMID(cfg);
-    // Keyboard Client
-    //var keyboardEventListener = new KeyboardEventListener();
 
     // events
     process.on('SIGINT', onSignalInt);
     process.on('SIGTERM', onSignalTerm);
-    //TODO uncomment for production 
-    //process.on('uncaughtException', onUncaughtException);
 
     // implementation
     function onSignalInt() {
@@ -77,24 +72,6 @@ if (cluster.isMaster) {
 
         log.error('[exception-handler] caught: ', err);
         log.alert('Node NOT exiting...');
-
-        //if (isShuttingDown) {
-        //    log.info('[exception-handler] Waiting for previous restart..');
-        //    return;
-        //}
-
-        //log.info('[exception-handler] Exiting app in 5 seconds...');
-
-        //// is shutting down but still capturing the errors
-        //isShuttingDown = true;
-
-        //// restart app    
-        //setTimeout(function() {
-        //    shutdown(function() {
-        //        log.info('[exception-handler] Shutdown success..');
-        //        process.exit();
-        //    });
-        //}, 5000);
     }
 
     function startup(successFn) {
@@ -111,10 +88,6 @@ if (cluster.isMaster) {
 
         // init mid event client
         ibusEventClientMID.init(ibusInterface, cdcDevice, midDevice);
-
-        // init keyboard listeren
-        //keyboardEventListener.init();
-        //keyboardEventListener.setRemoteControlClient('ibus', ibusDebuggerDevice);
     }
 
     function shutdown(successFn) {

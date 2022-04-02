@@ -16,8 +16,8 @@ var MK4ToMk3CDTextDevice = function(ibusInterface, navOutput) {
     ibusInterface.on('data', onData);
 
     // local data
-    var dataInfo = new Buffer([0xa5, 0x63, 0x01]);
-    var dataFlush = new Buffer([0xa5, 0x63, 0x00, 0x00]);
+    var dataInfo = new Buffer.from([0xa5, 0x63, 0x01]);
+    var dataFlush = new Buffer.from([0xa5, 0x63, 0x00, 0x00]);
     var artist = '';
     var title = '';
     var album = '';

@@ -40,14 +40,14 @@ var MidDevice = function (ibusInterface) {
         ibusInterface.sendMessage({
             src: 0x68,
             dst: 0xc0,
-            msg: Buffer.concat([new Buffer([0x23, 0x40, 0x20]), getPaddedLenBuf(_self.title2, 11)])
+            msg: Buffer.concat([new Buffer.from([0x23, 0x40, 0x20]), getPaddedLenBuf(_self.title2, 11)])
         });
         
         //working BC screen
         ibusInterface.sendMessage({
             src: 0x80,
             dst: 0xc0,
-            msg: Buffer.concat([new Buffer([0x23, 0x04, 0x20]), getPaddedLenBuf(_self.title1, 20)])
+            msg: Buffer.concat([new Buffer.from([0x23, 0x04, 0x20]), getPaddedLenBuf(_self.title1, 20)])
         });
     }
     
@@ -83,7 +83,7 @@ var MidDevice = function (ibusInterface) {
         ibusInterface.sendMessage({
             src: 0x68,
             dst: 0xc0,
-            msg: new Buffer([0x21, 0x40, 0x00, 0x09, 0x05, 0x05, 0x4D, 0x50, 0x33])
+            msg: new Buffer.from([0x21, 0x40, 0x00, 0x09, 0x05, 0x05, 0x4D, 0x50, 0x33])
         });
     }
     
@@ -93,10 +93,10 @@ var MidDevice = function (ibusInterface) {
             src: 0x68,
             dst: 0xc0,
             msg: Buffer.concat(
-                [new Buffer([0x21, 0x40, 0x00, 0x40, 0x06]), 
-                    getPaddedLenBuf('^ FIND ', 7), new Buffer([0xc1, 0x06]),
+                [new Buffer.from([0x21, 0x40, 0x00, 0x40, 0x06]), 
+                    getPaddedLenBuf('^ FIND ', 7), new Buffer.from([0xc1, 0x06]),
                     getPaddedLenBuf('OK  BACK', 8),
-                    new Buffer([0x20, 0x06]),
+                    new Buffer.from([0x20, 0x06]),
                     getPaddedLenBuf('PLAY   Q', 8)
                 ])
         };
