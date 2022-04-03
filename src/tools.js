@@ -160,7 +160,9 @@ module.exports = {
     logIbusPacket: function (pkt) {
         for (const [key, value] of Object.entries(msgs.messages)) {
             if (this.compareMsg(pkt, value)) {
-                log.info(`Received ${key}`);
+                if (parseInt(pkt.src, 16) == value.src && parseInt(pkt.dst, 16) == value.dst) {
+                    log.info(clc.yellow(`Received ${key}`));
+                }
             }
         }
         console.log('[IbusPacketReceived]', 'Id: 	  ', pkt.id);

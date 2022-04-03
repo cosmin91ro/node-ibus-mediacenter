@@ -42,7 +42,7 @@ var CDChangerDevice = function (ibusInterface) {
         const append = Buffer.from([cdNo, trackNo]);
         pkt.msg = Buffer.concat([pkt.msg, append]);
         ibusInterface.sendMessage(pkt);
-        log.info(`'CD${cdNo} TR${trackNo}' sent to radio`);
+        log.info(clc.yellow(`'CD${cdNo} TR${trackNo}' sent to radio`));
     }
 
 };

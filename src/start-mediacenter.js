@@ -24,6 +24,7 @@ if (cluster.isMaster) {
     var MidDevice = require('./devices/MidDevice.js');
     var IkeDevice = require('./devices/IkeDevice.js');
     var IbusDebuggerDevice = require('./devices/IbusDebuggerDevice.js');
+    var PH7090NavDevice = require('./devices/PH7090NavDevice.js');
 
     var IbusEventListenerMID = require('./listeners/IbusEventListenerMID.js');
     
@@ -49,6 +50,8 @@ if (cluster.isMaster) {
     
     // Ibus MID Event Client
     var ibusEventClientMID = new IbusEventListenerMID(cfg);
+
+    var navDisplay = new PH7090NavDevice(ibusInterface);
 
     // events
     process.on('SIGINT', onSignalInt);
@@ -87,7 +90,7 @@ if (cluster.isMaster) {
         midDevice.init(ibusInterface);
 
         // init mid event client
-        ibusEventClientMID.init(ibusInterface, cdcDevice, midDevice);
+        ibusEventClientMID.init(ibusInterface, cdcDevice, midDevice, navDisplay);
     }
 
     function shutdown(successFn) {

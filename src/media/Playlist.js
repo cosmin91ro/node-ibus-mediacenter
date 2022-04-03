@@ -122,14 +122,59 @@ var Playlist = function (config) {
         log.info(clc.blue("Files loaded"));
         log.debug(_self.items);
         if (_self.items.length == 0) {
-            log.error('No items in media library. Exiting ...');
-            process.exit(1);
+            log.error('No items here');
         }
 
         if (!_self.current) {
             _self.current = _self.items[0];
         }
         log.info('Current track:', _self.current);
+    }
+
+    function loadFiles(itemPath, cd, track) {
+        if (cd)
+        log.info(`Loading songs from ${cd}`);
+        _self.items = [];
+        if (!itemPath) { itemPath = _self.cfg.mediaPath; }
+
+        var d = itemPath.split('/');
+        var previousDir = d[d.length - 1];
+        var dirsAndFiles = fs.readdirSync(itemPath);
+        var counter = 0;
+
+        for (var i = 0; i < dirsAndFiles.length; i++) {
+            var currentDirOrFile = dirsAndFiles[i];
+            var mi = {
+                index: counter,
+                title1: currentDirOrFile.replace('.mp3', ''),
+                title2: previousDir,
+                filename: path.join(itemPath, currentDirOrFile),
+                items: [],
+                parent: null,
+                parsed: false,
+            };
+
+            if (cd && currentDirOrFile === cd && fs.lstatSync(mi.filename).isDirectory) {
+                loadFiles(mi.filename, null, track);
+            }
+
+            var addToList = false;
+            var stats = fs.lstatSync(mi.filename);
+            if (stats.isFile() && cd == null) {
+                var ft = mime.lookup(mi.filename);
+                if (ft == 'audio/mpeg' || ft == 'audio/x-ms-wma') {
+                    mi.items = null;
+                    addToList = true;
+                }
+            }
+
+            if (addToList) {
+                _self.items.push(mi);
+                if (track && track === mi.index + 1)
+                    _self.current = mi; 
+                counter++;
+            }
+        }
     }
 
     function rescan() {
@@ -168,52 +213,6 @@ var Playlist = function (config) {
             for (var i = item.items.length - 1; i >= 0; i--) {
                 clearParent(item.items[i]);
             };
-        }
-    }
-
-    function loadFiles(itemPath, cd, track) {
-        if (cd)
-        log.info(`Loading songs from ${cd}`);
-        _self.items = [];
-        if (!itemPath) { itemPath = _self.cfg.mediaPath; }
-
-        var d = itemPath.split('/');
-        var previousDir = d[d.length - 1];
-        var dirsAndFiles = fs.readdirSync(itemPath);
-        var counter = 0;
-
-        for (var i = 0; i < dirsAndFiles.length; i++) {
-            var currentDirOrFile = dirsAndFiles[i];
-            var mi = {
-                index: counter,
-                title1: currentDirOrFile.replace('.mp3', ''),
-                title2: previousDir,
-                filename: path.join(itemPath, currentDirOrFile),
-                items: [],
-                parent: null,
-                parsed: false,
-            };
-
-            if (cd && currentDirOrFile === cd && fs.lstatSync(mi.filename).isDirectory) {
-                loadFiles(mi.filename, null, track);
-            }
-
-            var addToList = false;
-            var stats = fs.lstatSync(mi.filename);
-            if (stats.isFile()) {
-                var ft = mime.lookup(mi.filename);
-                if (ft == 'audio/mpeg' || ft == 'audio/x-ms-wma') {
-                    mi.items = null;
-                    addToList = true;
-                }
-            }
-
-            if (addToList) {
-                _self.items.push(mi);
-                if (track && track === mi.index + 1)
-                    _self.current = mi; 
-                counter++;
-            }
         }
     }
 

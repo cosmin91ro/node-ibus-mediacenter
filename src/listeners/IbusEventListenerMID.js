@@ -16,10 +16,11 @@ var IbusEventListenerMID = function (config) {
     this.init = init;
     this.currentListType = {};
     
-    function init(ibusInterface, cdcDevice, midDevice) {
+    function init(ibusInterface, cdcDevice, midDevice, navDisplay) {
         _self.ibusInterface = ibusInterface;
         _self.cdChangerDevice = cdcDevice;
         _self.midDevice = midDevice;
+        _self.navDisplay = navDisplay;
         
         _self.title1 = "";
         _self.title2 = "";
@@ -36,15 +37,13 @@ var IbusEventListenerMID = function (config) {
     }
     
     function onStatusUpdate(data) {
-        const cdNo = parseInt(data.title2.replace('CD', ''));
-        const trackNo = data.index + 1;
-        _self.cdChangerDevice.sendPlayingXX(cdNo, trackNo);
-
         _self.title1 = data.title1;
         _self.title2 = data.title2;
         log.info(clc.yellow(`Playing ${data.title2} - track ${data.index + 1}`));
         log.info(JSON.stringify(data));
         writeStatus(data);
+
+        _self.navDisplay.setTitle(data.title1);
     }
 
     function writeStatus(status) {
@@ -76,9 +75,10 @@ var IbusEventListenerMID = function (config) {
         if (parseInt(data.src, 16) == msgs.devices.radio) { //From radio
             if (parseInt(data.dst, 16) == msgs.devices.cd_changer) { //To CD changer
                 if (tools.compare(data, msgs.messages.rad_cdReqPlay)) {
+
                     _self.currentPlaylist.play();
-                }
-                else if (tools.compareMsg(data, msgs.messages.rad_cdPool)) {
+
+                } else if (tools.compareMsg(data, msgs.messages.rad_cdPool)) {
                     _self.cdChangerDevice.respondAsCDplayer();
                 } else if (tools.compareMsg(data, msgs.messages.ph7090_arrow_left)) {
                     _self.currentPlaylist.previous();

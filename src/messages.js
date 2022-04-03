@@ -29,12 +29,12 @@
         ph7090_arrow_right: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x0a, 0x00]) },
         ph7090_arrow_left: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x0a, 0x01]) },
         // TBD
-        ph7090_1_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x00, 0x01]) },
-        ph7090_2_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x00, 0x02]) },
-        ph7090_3_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x00, 0x03]) },
-        ph7090_4_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x00, 0x04]) },
-        ph7090_5_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x00, 0x05]) },
-        ph7090_6_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x00, 0x06]) },
+        ph7090_1_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x06, 0x01]) },
+        ph7090_2_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x06, 0x02]) },
+        ph7090_3_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x06, 0x03]) },
+        ph7090_4_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x06, 0x04]) },
+        ph7090_5_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x06, 0x05]) },
+        ph7090_6_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x06, 0x06]) },
 
         //MFL buttons wheel
         previous_press: { src: 0x50, dst: 0x68, msg: new Buffer.from([0x3b, 0x08]) },
@@ -115,3 +115,7 @@
         //from old replace_rad2mid_CD0101: { src: 0x68, dst: 0xc0, msg: new Buffer.from([0x23, 0x40, 0x20, 0x43, 0x44, 0x20, 0x03, 0x31, 0x2d, 0x30, 0x31, 0x20, 0x20, 0x20, 0x20]) },
     }
 }
+// 0x38 0x01 0x00 - ph7090 volume button press (pause audio)
+// 68113b234030464d20032039322e3204202020 - afiseaza text pe ecran (#@0FM  92.1   )
+// 23 40 30 .. .. .. .. .. .. .. .. .. .. - afiseaza text pe ecran
+//6804183806<01/02/../06>  - chage CD
