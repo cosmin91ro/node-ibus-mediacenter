@@ -13,7 +13,7 @@ var CDChangerDevice = function (ibusInterface) {
     this.deviceName = 'CDChangerDevice';
     this.announceDevice = announceDevice;
     this.respondAsCDplayer = respondAsCDplayer;
-    this.sendPlaying0101 = sendPlaying0101;
+    this.sendPlayingXX = sendPlayingXX;
 
     // implementation
     function init() {
@@ -37,8 +37,12 @@ var CDChangerDevice = function (ibusInterface) {
         _self.announceNeeded=false;
     }
     
-    function sendPlaying0101(){
-        ibusInterface.sendMessage(msgs.messages.cdc_playing0101);
+    function sendPlayingXX(cdNo, trackNo) {
+        var pkt = msgs.messages.cdc_playingXX;
+        const append = Buffer.from([cdNo, trackNo]);
+        pkt.msg = Buffer.concat([pkt.msg, append]);
+        ibusInterface.sendMessage(pkt);
+        log.info(`'CD${cdNo} TR${trackNo}' sent to radio`);
     }
 
 };

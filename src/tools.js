@@ -1,6 +1,6 @@
 const log = require("log");
 var IbusDevices = require('ibus').IbusDevices;
-
+msgs = require('./messages.js');
 
 Array.prototype.hexToAscii = function (array) {
     if (!this)
@@ -158,6 +158,11 @@ module.exports = {
     },
 
     logIbusPacket: function (pkt) {
+        for (const [key, value] of Object.entries(msgs.messages)) {
+            if (this.compareMsg(pkt, value)) {
+                log.info(`Received ${key}`);
+            }
+        }
         console.log('[IbusPacketReceived]', 'Id: 	  ', pkt.id);
         console.log('[IbusPacketReceived]', 'From: 	  ', IbusDevices.getDeviceName(pkt.src));
         console.log('[IbusPacketReceived]', 'To: 	  ', IbusDevices.getDeviceName(pkt.dst));

@@ -16,6 +16,7 @@
         cdc_respondAsCd: { src: 0x18, dst: 0x68, msg: new Buffer.from([0x02, 0x00]) },
         // last byte is CD #, second last byte is track # 
         cdc_playing0101: { src: 0x18, dst: 0x68, msg: new Buffer.from([0x39, 0x00, 0x09, 0x00, 0x3f, 0x00, 0x01, 0x01]) },
+        cdc_playingXX: { src: 0x18, dst: 0x68, msg: new Buffer.from([0x39, 0x00, 0x09, 0x00, 0x3f, 0x00]) }, // last two bytes to be filled at send time
         
         //From radio
         rad_cdReqParams: { src: 0x68, dst: 0x18, msg: new Buffer.from([0x38, 0x00, 0x00]) },
@@ -28,12 +29,12 @@
         ph7090_arrow_right: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x0a, 0x00]) },
         ph7090_arrow_left: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x0a, 0x01]) },
         // TBD
-        ph7090_1_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0xba]) },
-        ph7090_2_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0xbb]) },
-        ph7090_3_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0xbc]) },
-        ph7090_4_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0xbd]) },
-        ph7090_5_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0xbe]) },
-        ph7090_6_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0xbf]) },
+        ph7090_1_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x00, 0x01]) },
+        ph7090_2_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x00, 0x02]) },
+        ph7090_3_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x00, 0x03]) },
+        ph7090_4_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x00, 0x04]) },
+        ph7090_5_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x00, 0x05]) },
+        ph7090_6_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x00, 0x06]) },
 
         //MFL buttons wheel
         previous_press: { src: 0x50, dst: 0x68, msg: new Buffer.from([0x3b, 0x08]) },

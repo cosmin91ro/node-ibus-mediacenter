@@ -39,7 +39,7 @@ var Playlist = function (config) {
     this.mode = "play"; //play, browse, search
     this.browseCurrent = {};
     this.queue = queue;
-    this.loadFiles = loadFiles;
+    this.loadPlaylist = loadPlaylist;
 
     this.totalMiItems = 0;
 
@@ -85,6 +85,7 @@ var Playlist = function (config) {
         var cd = 'CD1';
         var track = 1;
         const statusFile = 'status';
+        log.info('Looking for last status ...');
         if (fs.existsSync(statusFile)) {
             var status = fs.readFileSync(statusFile, 'utf-8').replace('\n', '');
             const parts = status.split('-');
@@ -92,40 +93,18 @@ var Playlist = function (config) {
                 cd = parts[0];
                 track = parseInt(parts[1]);
             }
+        } else {
+            log.info('Status file not found.');
         }
 
         if (_self.typeName == "dir") {
-            log.info(clc.blue("Loading list..."));
-            var plst = null;
-            try {
-                plst = fs.readFileSync("list.txt");
-            }
-            catch (ex) {
-                plst = null;
-            }
-            if (plst != null && plst.length > 0) {
-                _self.items = loadItems();
-                log.info(clc.blue("Loaded list."));
-            }
-            else {
-                loadFiles(null, cd, track);
-                log.info(clc.blue("Files loaded"));
-                log.debug(_self.items);
-                if (_self.items.length == 0) {
-                    log.error('No items in media library. Exiting ...');
-                    process.exit(1);
-                }
-        
-                if (!_self.current) {
-                    _self.current = _self.items[0];
-                }
-                log.info('Current track:', _self.current);
+            loadPlaylist(null, cd, track);
 
-                _self.parsingItems = JSON.parse(JSON.stringify(_self.items));
-                for (var i = _self.parsingItems.length - 1; i >= 0; i--) {
-                    var mi = _self.parsingItems[i];
-                };
-            }
+            _self.parsingItems = JSON.parse(JSON.stringify(_self.items));
+            for (var i = _self.parsingItems.length - 1; i >= 0; i--) {
+                var mi = _self.parsingItems[i];
+            };
+            
             for (var i = _self.items.length - 1; i >= 0; i--) {
                 addParent(_self.items[i], null);
             };
@@ -136,6 +115,21 @@ var Playlist = function (config) {
         else if (_self.typeName = "queue") {
 
         }
+    }
+
+    function loadPlaylist(itemPath, cd, track) {
+        loadFiles(itemPath, cd, track);
+        log.info(clc.blue("Files loaded"));
+        log.debug(_self.items);
+        if (_self.items.length == 0) {
+            log.error('No items in media library. Exiting ...');
+            process.exit(1);
+        }
+
+        if (!_self.current) {
+            _self.current = _self.items[0];
+        }
+        log.info('Current track:', _self.current);
     }
 
     function rescan() {

@@ -36,6 +36,10 @@ var IbusEventListenerMID = function (config) {
     }
     
     function onStatusUpdate(data) {
+        const cdNo = parseInt(data.title2.replace('CD', ''));
+        const trackNo = data.index + 1;
+        _self.cdChangerDevice.sendPlayingXX(cdNo, trackNo);
+
         _self.title1 = data.title1;
         _self.title2 = data.title2;
         log.info(clc.yellow(`Playing ${data.title2} - track ${data.index + 1}`));
@@ -52,6 +56,13 @@ var IbusEventListenerMID = function (config) {
             });
         console.info(`Status ${st} written to file`);
     }
+
+    function changeCD(cd) {
+        if (_self.currentPlaylist.current.title2 === cd)
+            return;
+        _self.currentPlaylist.loadPlaylist(null, cd, 1);
+        _self.currentPlaylist.play();
+    }
     
     function onData(data) {
         if (process.env.LOG_ONLY) {
@@ -64,11 +75,7 @@ var IbusEventListenerMID = function (config) {
         
         if (parseInt(data.src, 16) == msgs.devices.radio) { //From radio
             if (parseInt(data.dst, 16) == msgs.devices.cd_changer) { //To CD changer
-                if (tools.compareMsg(data, msgs.messages.rad_cdReqParams) || tools.compare(data, msgs.messages.rad_cdReqPlay)) {
-                   log.info("Received rad_cdReqPlay");
-			        // _self.cdChangerDevice.sendPlaying0101();
-                    _self.currentPlaylist.current = _self.currentPlaylist.browseCurrent;
-                    _self.currentPlaylist.mode = "play";
+                if (tools.compare(data, msgs.messages.rad_cdReqPlay)) {
                     _self.currentPlaylist.play();
                 }
                 else if (tools.compareMsg(data, msgs.messages.rad_cdPool)) {
@@ -78,17 +85,17 @@ var IbusEventListenerMID = function (config) {
                 } else if (tools.compareMsg(data, msgs.messages.ph7090_arrow_right)) {
                     _self.currentPlaylist.next();
                 } else if (tools.compareMsg(data, msgs.messages.ph7090_1_press)) {
-                    _self.currentPlaylist.loadFiles(null, 'CD1', 1);
+                    changeCD('CD1');
                 } else if (tools.compareMsg(data, msgs.messages.ph7090_2_press)) {
-                    _self.currentPlaylist.loadFiles(null, 2, 1);
+                    changeCD('CD2');
                 } else if (tools.compareMsg(data, msgs.messages.ph7090_3_press)) {
-                    _self.currentPlaylist.loadFiles(null, 3, 1);
+                    changeCD('CD3');
                 } else if (tools.compareMsg(data, msgs.messages.ph7090_4_press)) {
-                    _self.currentPlaylist.loadFiles(null, 4, 1);
+                    changeCD('CD4');
                 } else if (tools.compareMsg(data, msgs.messages.ph7090_5_press)) {
-                    _self.currentPlaylist.loadFiles(null, 5, 1);
+                    changeCD('CD5');
                 } else if (tools.compareMsg(data, msgs.messages.ph7090_6_press)) {
-                    _self.currentPlaylist.loadFiles(null, 6, 1);
+                    changeCD('CD6');
                 }
             }
             else if (parseInt(data.dst, 16) == msgs.devices.mid) { //To MID
