@@ -14,6 +14,7 @@ var CDChangerDevice = function (ibusInterface) {
     this.announceDevice = announceDevice;
     this.respondAsCDplayer = respondAsCDplayer;
     this.sendPlayingXX = sendPlayingXX;
+    this.sendPlaying0101 = sendPlaying0101;
 
     // implementation
     function init() {
@@ -35,6 +36,11 @@ var CDChangerDevice = function (ibusInterface) {
     function respondAsCDplayer() {
         ibusInterface.sendMessage(msgs.messages.cdc_respondAsCd);
         _self.announceNeeded=false;
+    }
+
+    function sendPlaying0101() {
+        ibusInterface.sendMessage(msgs.messages.cdc_playingXX);
+        log.info(clc.yellow(`'CD TR' sent to radio`));
     }
     
     function sendPlayingXX(cdNo, trackNo) {

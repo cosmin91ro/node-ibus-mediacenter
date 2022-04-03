@@ -77,6 +77,7 @@ var IbusEventListenerMID = function (config) {
                 if (tools.compare(data, msgs.messages.rad_cdReqPlay)) {
 
                     _self.currentPlaylist.play();
+                    
 
                 } else if (tools.compareMsg(data, msgs.messages.rad_cdPool)) {
                     _self.cdChangerDevice.respondAsCDplayer();

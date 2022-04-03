@@ -165,9 +165,10 @@ module.exports = {
                 }
             }
         }
-        console.log('[IbusPacketReceived]', 'Id: 	  ', pkt.id);
-        console.log('[IbusPacketReceived]', 'From: 	  ', IbusDevices.getDeviceName(pkt.src));
-        console.log('[IbusPacketReceived]', 'To: 	  ', IbusDevices.getDeviceName(pkt.dst));
-        console.log('[IbusPacketReceived]', 'Message: ', pkt.msg, '\n');
+        console.log('[IbusPacketReceived]', 'Id: 	        ', pkt.id);
+        console.log('[IbusPacketReceived]', 'From: 	        ', IbusDevices.getDeviceName(pkt.src));
+        console.log('[IbusPacketReceived]', 'To: 	        ', IbusDevices.getDeviceName(pkt.dst));
+        console.log('[IbusPacketReceived]', 'Message:       ', pkt.msg, '\n');
+        console.log(clc.yellow('[IbusPacketReceived]', 'Message (text):', pkt.msg.toString(), '\n'));
     }
 }
