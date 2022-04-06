@@ -122,6 +122,12 @@ var MPlayerClient = function () {
             });
         }
     }
+
+    function setVolume(volume) {
+        if(this.childProc !== null){
+            this.childProc.stdin.write('volume ' + volume + ' 1\n');
+        }
+    };
 }
 
 util.inherits(MPlayerClient, EventEmitter);

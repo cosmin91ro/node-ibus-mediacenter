@@ -4,6 +4,8 @@ clc = require('cli-color'),
 msgs = require('../messages.js'),
 Playlist = require('../media/Playlist.js');
 fs = require('fs');
+var ibusDevices = require('ibus').IbusDevices;
+
 
 var IbusEventListenerMID = function (config) {
     
@@ -158,6 +160,17 @@ var IbusEventListenerMID = function (config) {
                     _self.currentPlaylist.next();
                 }
             }
+        } else if (ibusDevices.getDeviceName(data.src) === 'OnBoardMonitor - f0') {
+            if (ibusDevices.getDeviceName(data.dst) === 'Radio - 68') {
+                if (tools.compareMsg(data, msgs.messages.volume_up)) {
+                   log.debug('volume up ...');
+                   _self.currentPlaylist.mpc.setVolume(100);
+                } else if (tools.compareMsg(data, msgs.messages.volume_down)) {
+                    log.debug('volume down ...');
+                    _self.currentPlaylist.mpc.setVolume(50);
+                }
+            }
+
         }
     }
 }

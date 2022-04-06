@@ -2,13 +2,14 @@ const log = require("log");
 const path = require('path');
 
 clc = require('cli-color'),
-    Config = require('../config.js'),
-    fs = require('fs'),
-    mime = require('mime'),
-    mm = require('musicmetadata'),
-    MPlayerClient = require('../clients/MPlayerClient.js'),
-    util = require('util'),
-    EventEmitter = require("events").EventEmitter;
+Config = require('../config.js'),
+fs = require('fs'),
+mime = require('mime'),
+mm = require('musicmetadata'),
+MPlayerClient = require('../clients/MPlayerClient.js'),
+// MPlayerClient = require('../clients/node-mplayer.js'),
+util = require('util'),
+EventEmitter = require("events").EventEmitter;
 
 var moduleName = '[Playlist] ';
 

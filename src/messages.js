@@ -28,13 +28,16 @@
         replace_rad2midCDbuttons: { src: 0x68, dst: 0xc0, msg: new Buffer.from([0x21, 0x40, 0x00, 0x00, 0x20, 0x31, 0x05, 0x32, 0x20, 0x05, 0x20, 0x33, 0x05, 0x34, 0x20, 0x05, 0x20, 0x35, 0x05, 0x36, 0x20, 0x05, 0x05, 0x05, 0x52, 0x4e, 0x44, 0x20]) },
         ph7090_arrow_right: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x0a, 0x00]) },
         ph7090_arrow_left: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x0a, 0x01]) },
-        // TBD
         ph7090_1_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x06, 0x01]) },
         ph7090_2_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x06, 0x02]) },
         ph7090_3_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x06, 0x03]) },
         ph7090_4_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x06, 0x04]) },
         ph7090_5_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x06, 0x05]) },
         ph7090_6_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x06, 0x06]) },
+
+        // OnBoardMonitor
+        volume_up: { src: 0xf0, dst: 0x68, msg: new Buffer.from([0x32, 0x11])},
+        volume_down: { src: 0xf0, dst: 0x68, msg: new Buffer.from([0x32, 0x10])},
 
         //MFL buttons wheel
         previous_press: { src: 0x50, dst: 0x68, msg: new Buffer.from([0x3b, 0x08]) },
@@ -115,7 +118,27 @@
         //from old replace_rad2mid_CD0101: { src: 0x68, dst: 0xc0, msg: new Buffer.from([0x23, 0x40, 0x20, 0x43, 0x44, 0x20, 0x03, 0x31, 0x2d, 0x30, 0x31, 0x20, 0x20, 0x20, 0x20]) },
     }
 }
-// 0x38 0x01 0x00 - ph7090 volume button press (pause audio)
-// 68113b234030464d20032039322e3204202020 - afiseaza text pe ecran (#@0FM  92.1   )
-// 23 40 30 .. .. .. .. .. .. .. .. .. .. - afiseaza text pe ecran
-//6804183806<01/02/../06>  - chage CD
+// 0x38 0x01 0x00 - ph7090 volume button press (pause audio) ????
+// 68113b234030464d20032039322e3204202020 - text on top (#@0FM  92.1   )
+// src len dst 23 40 30 .. .. .. .. .. .. .. .. .. .. - text on top
+// 680f3b23c530<11 chars> - text on bottom
+
+// 6804183806<01/02/../06>  - chage CD
+
+// f003683210 - volume knob turn left
+// f003683211 - volume knob turn right
+// f003684806 - volume knob down
+// f003684886 - volume knob up
+// f003684846 - volume knob press and hold
+
+// 6802f4a00 - mute
+// 6802f4aff - unmute
+
+// 680418380801 - potential Random ON
+
+// 680418380100 MODE switched to radio
+// 8003bf1100 key turn of
+
+// ??? fast forward
+// ??? fast backward
+

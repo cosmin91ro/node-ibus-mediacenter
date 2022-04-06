@@ -68,6 +68,12 @@ var PH7090NavDevice = function(ibusInterface) {
             dst: 0x3b,
             msg: Buffer.concat([new Buffer.from([0x23, 0x40, 0x30]), getPaddedLenBuf(text, 11)])
         });
+
+        ibusInterface.sendMessage({
+            src: 0x68,
+            dst: 0x3b,
+            msg: Buffer.concat([new Buffer.from([0x23, 0xc5, 0x30]), getPaddedLenBuf(text, 11)])
+        });
     }
 
     function setOption(index, text) {
