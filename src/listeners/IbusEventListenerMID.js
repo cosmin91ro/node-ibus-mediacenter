@@ -114,6 +114,8 @@ var IbusEventListenerMID = function (config) {
                 else if (tools.compareMsg(data, msgs.messages.replace_rad2midCDbuttons)) {
                     _self.midDevice.showMenu1();
                 }
+            } else if (tools.compareMsg(data, msgs.messages.mute)){
+                _self.currentPlaylist.pauseToggle();
             }
         }
         else if (parseInt(data.src, 16) == msgs.devices.mid) { //From MID

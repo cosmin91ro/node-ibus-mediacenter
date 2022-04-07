@@ -30,8 +30,7 @@ var Playlist = function (config) {
     this.back = back;
 
     this.play = play;
-    this.stop = stop;
-    this.pause = pause;
+    this.pauseToggle = pauseToggle;
     this.seek = seek;
     this.currentTime = info;
     this.next = next;
@@ -39,7 +38,6 @@ var Playlist = function (config) {
     this.current = {};
     this.mode = "play"; //play, browse, search
     this.browseCurrent = {};
-    this.queue = queue;
     this.loadPlaylist = loadPlaylist;
 
     this.totalMiItems = 0;
@@ -430,16 +428,8 @@ var Playlist = function (config) {
         }
     }
 
-    function queue(item) {
-
-    }
-
-    function stop() {
-        _self.client.sendCommand(cmd("stop", []), _logResultMessage);
-    }
-
-    function pause() {
-        _self.client.sendCommand(cmd("pause", []), _logResultMessage);
+    function pauseToggle() {
+        _self.mpc.pause();
     }
 
     //slow    

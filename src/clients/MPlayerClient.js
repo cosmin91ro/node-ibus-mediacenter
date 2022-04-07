@@ -65,7 +65,7 @@ var MPlayerClient = function () {
                 var args = ['-slave', '-quiet', this.file],
                     that = this;
                 
-                _self.childProc = spawn('mplayer', args);
+                _self.childProc = spawn('/Applications/mplayer/mplayer', args);
                 if (_self.childProc !== null) {
                     log.info("*** player setup " + " ... " + filename);
                 }
@@ -97,7 +97,7 @@ var MPlayerClient = function () {
     
     function pause() {
         if (_self.childProc !== null) {
-            _self.childProc.stdin.write('mute\n');
+            _self.childProc.stdin.write('pause\n');
         }
     }
     
