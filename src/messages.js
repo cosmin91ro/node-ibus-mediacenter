@@ -118,10 +118,11 @@
         //from old replace_rad2mid_CD0101: { src: 0x68, dst: 0xc0, msg: new Buffer.from([0x23, 0x40, 0x20, 0x43, 0x44, 0x20, 0x03, 0x31, 0x2d, 0x30, 0x31, 0x20, 0x20, 0x20, 0x20]) },
     }
 }
-// 0x38 0x01 0x00 - ph7090 volume button press (pause audio) ????
-// 68113b234030464d20032039322e3204202020 - text on top (#@0FM  92.1   )
-// src len dst 23 40 30 .. .. .. .. .. .. .. .. .. .. - text on top
-// 680f3b23c530<11 chars> - text on bottom
+
+// src len dst 23 c0 30 .. .. .. .. .. .. .. .. .. .. - text on top
+// 680f3b23c530<11 chars> - show fast forward symbol
+// 680f3b23c630<11 chars> - show fast reward symbol
+
 
 // 6804183806<01/02/../06>  - chage CD
 
@@ -131,14 +132,21 @@
 // f003684886 - volume knob up
 // f003684846 - volume knob press and hold
 
-// 6802f4a00 - mute
-// 6802f4aff - unmute
+// 6802f4a00 - pause
+// 6802f4aff - unpause
 
 // 680418380801 - potential Random ON
 
 // 680418380100 MODE switched to radio
 // 8003bf1100 key turn of
 
-// ??? fast forward
-// ??? fast backward
+// 680418380401 fast forward
+// 680418380400 fast backward
 
+// 3F05000C5401CK - Passenger Front Window: Open
+// 3F05000C5201CK - Driver Front Window: Open
+// 3F05000C5501CK - Passenger Front Window: Close
+// 3F05000C5301CK - Driver Front Window: Close
+
+// 3F05000C3401CK - All Doors: Lock
+// 3F05000C3501CK - All Doors: Unlock
