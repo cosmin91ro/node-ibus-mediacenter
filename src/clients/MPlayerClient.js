@@ -34,11 +34,6 @@ var MPlayerClient = function () {
     
     events.EventEmitter.call(this);
     
-    //cp.exec('mplayer', function (err, stdout, stdin) {
-    //    if (err)
-    //        throw new Error("Mplayer encountered an error or isn't installed.");
-    //});
-    
     // implementation
     function init() {
         log.info('[MPLayerClient] Starting up..');
@@ -65,7 +60,7 @@ var MPlayerClient = function () {
                 var args = ['-slave', '-quiet', this.file],
                     that = this;
                 
-                _self.childProc = spawn('/Applications/mplayer/mplayer', args);
+                _self.childProc = spawn('mplayer', args);
                 if (_self.childProc !== null) {
                     log.info("*** player setup " + " ... " + filename);
                 }
@@ -115,6 +110,8 @@ var MPlayerClient = function () {
                     callback(answer.split('=')[1]);
                 }
             });
+        } else {
+            callback(undefined);
         }
     }
 

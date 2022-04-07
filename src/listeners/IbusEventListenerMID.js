@@ -99,6 +99,10 @@ var IbusEventListenerMID = function (config) {
                     changeCD('CD5');
                 } else if (tools.compareMsg(data, msgs.messages.ph7090_6_press)) {
                     changeCD('CD6');
+                } else if (tools.compareMsg(data, msgs.messages.ph7090_mode_radio)) {
+                    _self.currentPlaylist.currentTime(function (isPlaying) {
+                        if (isPlaying) _self.currentPlaylist.pauseToggle();
+                    });
                 }
             }
             else if (parseInt(data.dst, 16) == msgs.devices.mid) { //To MID
@@ -114,8 +118,14 @@ var IbusEventListenerMID = function (config) {
                 else if (tools.compareMsg(data, msgs.messages.replace_rad2midCDbuttons)) {
                     _self.midDevice.showMenu1();
                 }
-            } else if (tools.compareMsg(data, msgs.messages.mute)){
-                _self.currentPlaylist.pauseToggle();
+            } else if (tools.compareMsg(data, msgs.messages.pause)) {
+                _self.currentPlaylist.currentTime(function (isPlaying) {
+                    if (isPlaying) _self.currentPlaylist.pauseToggle();
+                });
+            } else if (tools.compareMsg(data, msgs.messages.unpause)){
+                _self.currentPlaylist.currentTime(function (isPlaying) {
+                    if (!isPlaying) _self.currentPlaylist.pauseToggle();
+                });
             }
         }
         else if (parseInt(data.src, 16) == msgs.devices.mid) { //From MID
