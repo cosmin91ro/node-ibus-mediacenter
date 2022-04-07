@@ -104,8 +104,7 @@
         cd_sc_hold: { src: 0xC0 , dst: 0x68, msg: new Buffer.from([0x31, 0x40, 0x00, 0x2a]) },
         cd_sc_release: { src: 0xC0 , dst: 0x68, msg: new Buffer.from([0x31, 0x40, 0x00, 0x4a]) },
 
-        //Test
-        //test: { src: 0x80, dst: 0xe7, msg: new Buffer.from([0x2a, 0x00, 0x00]) }
+        key_turn_off: { src: 0x80, dst: 0xbf, msg: new Buffer.from([0x11, 0x00])}
     },
     
     messageParts: {

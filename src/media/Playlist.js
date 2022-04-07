@@ -31,6 +31,7 @@ var Playlist = function (config) {
 
     this.play = play;
     this.pauseToggle = pauseToggle;
+    this.stop = stop;
     this.seek = seek;
     this.currentTime = info;
     this.next = next;
@@ -69,7 +70,7 @@ var Playlist = function (config) {
         }
         _self.browseCurrent = _self.current;
         // mpc client startup
-        _self.mpc.init();
+        _self.mpc.init({mplayerBinary: process.argv[4]});
     }
 
     function onPlayerEnd(data) {
@@ -430,6 +431,10 @@ var Playlist = function (config) {
 
     function pauseToggle() {
         _self.mpc.pause();
+    }
+
+    function stop(hardStop) {
+        _self.mpc.stop(hardStop);
     }
 
     //slow    

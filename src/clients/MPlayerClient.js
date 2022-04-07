@@ -19,11 +19,13 @@ var MPlayerClient = function () {
     this.childProc = null;
     this.file = "";
     this.rl = null;
+    this.mplayerBinary = null;
     
     // exposed data
     this.init = init;
     this.play = play;
     this.pause = pause;
+    this.stop = stop;
     this.info = info;
     this.seek = seek;
     this.volumeUp = volumeUp;
@@ -35,8 +37,9 @@ var MPlayerClient = function () {
     events.EventEmitter.call(this);
     
     // implementation
-    function init() {
+    function init(opts) {
         log.info('[MPLayerClient] Starting up..');
+        this.mplayerBinary = opts.mplayerBinary;
     }
     
     function play(filename) {
@@ -60,13 +63,13 @@ var MPlayerClient = function () {
                 var args = ['-slave', '-quiet', this.file],
                     that = this;
                 
-                _self.childProc = spawn('mplayer', args);
+                _self.childProc = spawn(this.mplayerBinary, args);
                 if (_self.childProc !== null) {
                     log.info("*** player setup " + " ... " + filename);
                 }
                 
                 _self.childProc.on('error', function (error) {
-                    log.error("*** player Error " + " ... " + filename);
+                    log.error("*** player Error " + " ... " + error);
                     that.emit('error');
                 });
                 
@@ -93,6 +96,16 @@ var MPlayerClient = function () {
     function pause() {
         if (_self.childProc !== null) {
             _self.childProc.stdin.write('pause\n');
+        }
+    }
+
+    function stop(hardStop) {
+        if (_self.childProc !== null) {
+            if (hardStop) {
+                _self.childProc.kill('SIGTERM');
+            } else {
+                _self.childProc.stdin.write('stop\n');
+            }
         }
     }
     

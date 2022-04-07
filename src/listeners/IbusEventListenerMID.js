@@ -100,9 +100,7 @@ var IbusEventListenerMID = function (config) {
                 } else if (tools.compareMsg(data, msgs.messages.ph7090_6_press)) {
                     changeCD('CD6');
                 } else if (tools.compareMsg(data, msgs.messages.ph7090_mode_radio)) {
-                    _self.currentPlaylist.currentTime(function (isPlaying) {
-                        if (isPlaying) _self.currentPlaylist.pauseToggle();
-                    });
+                    _self.currentPlaylist.stop(true);
                 }
             }
             else if (parseInt(data.dst, 16) == msgs.devices.mid) { //To MID
@@ -182,7 +180,12 @@ var IbusEventListenerMID = function (config) {
                     _self.currentPlaylist.mpc.volumeDown();
                 }
             }
-
+        } else if (ibusDevices.getDeviceName(data.src) === 'InstrumentClusterElectronics - 80') {
+            if (ibusDevices.getDeviceName(data.dst) === 'LightControlModule - bf') {
+                if (tools.compareMsg(data, msgs.messages.key_turn_off)) {
+                    _self.currentPlaylist.stop(true);
+                }
+            }
         }
     }
 }
