@@ -164,10 +164,10 @@ var IbusEventListenerMID = function (config) {
             if (ibusDevices.getDeviceName(data.dst) === 'Radio - 68') {
                 if (tools.compareMsg(data, msgs.messages.volume_up)) {
                    log.debug('volume up ...');
-                //    _self.currentPlaylist.mpc.setVolume(100);
+                   _self.currentPlaylist.mpc.volumeUp();
                 } else if (tools.compareMsg(data, msgs.messages.volume_down)) {
                     log.debug('volume down ...');
-                    // _self.currentPlaylist.mpc.setVolume(50);
+                    _self.currentPlaylist.mpc.volumeDown();
                 }
             }
 

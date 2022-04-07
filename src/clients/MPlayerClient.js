@@ -27,7 +27,7 @@ var MPlayerClient = function () {
     this.info = info;
     this.seek = seek;
     this.volumeUp = volumeUp;
-    this.volumeDown = this.volumeDown;
+    this.volumeDown = volumeDown;
     
     if (typeof path !== 'undefined')
         this.setFile(path);
@@ -114,23 +114,19 @@ var MPlayerClient = function () {
                 if (answer.split('=')[1] !== undefined) {
                     callback(answer.split('=')[1]);
                 }
-                //clause not working                
-                //if (answer !== null && answer.match(/\S+/g) !== null) {
-                //    callback(answer.split('=')[1]);
-                //       }
             });
         }
     }
 
     function volumeUp() {
         if(this.childProc !== null){
-            this.childProc.stdin.write('*');
+            this.childProc.stdin.write('volume +10 0\n');
         }
     };
 
-    function volumeUp() {
+    function volumeDown() {
         if(this.childProc !== null){
-            this.childProc.stdin.write('/');
+            this.childProc.stdin.write('volume -10 0\n');
         }
     };
 }
