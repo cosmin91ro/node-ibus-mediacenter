@@ -68,7 +68,6 @@ var MPlayerClient = function () {
                 _self.childProc = spawn('mplayer', args);
                 if (_self.childProc !== null) {
                     log.info("*** player setup " + " ... " + filename);
-                    _self.childProc.stdin.write('volume 100 1\n');
                 }
                 
                 _self.childProc.on('error', function (error) {
