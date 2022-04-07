@@ -26,6 +26,8 @@ var MPlayerClient = function () {
     this.pause = pause;
     this.info = info;
     this.seek = seek;
+    this.volumeUp = volumeUp;
+    this.volumeDown = this.volumeDown;
     
     if (typeof path !== 'undefined')
         this.setFile(path);
@@ -60,15 +62,13 @@ var MPlayerClient = function () {
                 //log.alert("*** player nothing to kill ." + e2);
             };
             try {
-                //var args = ['-slave', '-quiet', 'loop 0', '-playlist' /* added to support playlists */, this.file],
-                var args = ['-slave', '-quiet', 'loop 0', this.file],
+                var args = ['-slave', '-quiet', this.file],
                     that = this;
                 
                 _self.childProc = spawn('mplayer', args);
                 if (_self.childProc !== null) {
                     log.info("*** player setup " + " ... " + filename);
                     _self.childProc.stdin.write('volume 100 1\n');
-                    _self.childProc.stdin.write('loop 0\n');
                 }
                 
                 _self.childProc.on('error', function (error) {
@@ -123,9 +123,15 @@ var MPlayerClient = function () {
         }
     }
 
-    function setVolume(volume) {
+    function volumeUp() {
         if(this.childProc !== null){
-            this.childProc.stdin.write('volume ' + volume + ' 1\n');
+            this.childProc.stdin.write('*');
+        }
+    };
+
+    function volumeUp() {
+        if(this.childProc !== null){
+            this.childProc.stdin.write('/');
         }
     };
 }
