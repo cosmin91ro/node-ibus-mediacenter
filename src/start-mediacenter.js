@@ -16,6 +16,11 @@ if (cluster.isMaster) {
         }
     });
 } else {
+    if (process.argv.length < 5){
+        log.info(`Usage: ${process.argv[0]} ${process.argv[1]} <tty_device> <mediacenter_location> <mplayer_binary>`);
+        process.exit(-1);
+    }
+
     var Config = require('./config.js');
     var IbusInterface = require('ibus').IbusInterface;
     var IbusDevices = require('ibus').IbusDevices;

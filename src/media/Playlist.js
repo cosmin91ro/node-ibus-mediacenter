@@ -40,7 +40,7 @@ var Playlist = function (config) {
     this.mode = "play"; //play, browse, search
     this.browseCurrent = {};
     this.loadPlaylist = loadPlaylist;
-
+    this.isPaused = isPaused;
     this.totalMiItems = 0;
 
     // MPlayer Client
@@ -79,6 +79,10 @@ var Playlist = function (config) {
 
     function info(callback) {
         return _self.mpc.info(callback);
+    }
+
+    function isPaused(callback) {
+        return _self.mpc.isPaused(callback);
     }
 
     function loadFromDisk() {

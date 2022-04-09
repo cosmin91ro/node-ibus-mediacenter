@@ -30,6 +30,7 @@ var MPlayerClient = function () {
     this.seek = seek;
     this.volumeUp = volumeUp;
     this.volumeDown = volumeDown;
+    this.isPaused = isPaused;
     
     if (typeof path !== 'undefined')
         this.setFile(path);
@@ -125,6 +126,18 @@ var MPlayerClient = function () {
             });
         } else {
             callback(undefined);
+        }
+    }
+
+    function isPaused(callback) {
+        if (_self.childProc !== null && !_self.rl.closed) {
+            _self.rl.question("pausing_keep_force get_property pause\n", function (answer) {
+                if (answer.split('=').lenght == 2 && answer.split('=')[1] === 'yes') {
+                    callback(true);
+                }
+            });
+        } else {
+            callback(false);
         }
     }
 
