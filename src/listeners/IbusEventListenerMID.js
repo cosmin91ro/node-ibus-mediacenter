@@ -100,7 +100,9 @@ var IbusEventListenerMID = function (config) {
                 } else if (tools.compareMsg(data, msgs.messages.ph7090_6_press)) {
                     changeCD('CD6');
                 } else if (tools.compareMsg(data, msgs.messages.ph7090_mode_radio)) {
-                    _self.currentPlaylist.stop(true);
+                    _self.currentPlaylist.currentTime(function (isPlaying) {
+                        if (isPlaying) _self.currentPlaylist.stop(true);
+                    });
                 }
             }
             else if (parseInt(data.dst, 16) == msgs.devices.mid) { //To MID
