@@ -144,12 +144,14 @@ var MPlayerClient = function () {
 
     function volumeUp() {
         if(this.childProc !== null){
+            log.info('Raising volume ...');
             this.childProc.stdin.write('volume +10 0\n');
         }
     };
 
     function volumeDown() {
         if(this.childProc !== null){
+            log.info('Lowering volume ...');
             this.childProc.stdin.write('volume -10 0\n');
         }
     };

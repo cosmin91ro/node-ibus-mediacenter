@@ -10,7 +10,7 @@ var ibusDevices = require('ibus').IbusDevices;
 var IbusEventListenerMID = function (config) {
     
     var _self = this;
-    
+    this.config = config;
     this.deviceName = 'IbusEventClientMID';
     this.ibusInterface = {};
     this.cdChangerDevice = {};
@@ -35,7 +35,6 @@ var IbusEventListenerMID = function (config) {
         
         // events
         ibusInterface.on('data', onData);
-
     }
     
     function onStatusUpdate(data) {
@@ -193,12 +192,12 @@ var IbusEventListenerMID = function (config) {
         } else if (ibusDevices.getDeviceName(data.src) === 'OnBoardMonitor - f0') {
             if (ibusDevices.getDeviceName(data.dst) === 'Radio - 68') {
                 if (tools.compareMsg(data, msgs.messages.volume_up)) {
-                   log.debug('volume up ...');
-                   // TODO will handle volume based on a process.argv
-                   //_self.currentPlaylist.mpc.volumeUp();
+                   if (_self.config.handeVolumeCommands) _self.currentPlaylist.mpc.volumeUp();
+                   else log.info("Volume commands not handleded")
                 } else if (tools.compareMsg(data, msgs.messages.volume_down)) {
                     log.debug('volume down ...');
-                    //_self.currentPlaylist.mpc.volumeDown();
+                    if (_self.config.handeVolumeCommands)  _self.currentPlaylist.mpc.volumeDown();
+                   else log.info("Volume commands not handleded")
                 }
             }
         } else if (ibusDevices.getDeviceName(data.src) === 'InstrumentClusterElectronics - 80') {

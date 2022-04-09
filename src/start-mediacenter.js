@@ -17,7 +17,7 @@ if (cluster.isMaster) {
     });
 } else {
     if (process.argv.length < 5){
-        log.info(`Usage: ${process.argv[0]} ${process.argv[1]} <tty_device> <mediacenter_location> <mplayer_binary>`);
+        log.info(`Usage: ${process.argv[0]} ${process.argv[1]} <tty_device> <mediacenter_location> <mplayer_binary> [--handle-volume-commands]`);
         process.exit(-1);
     }
 
@@ -33,7 +33,7 @@ if (cluster.isMaster) {
 
     var IbusEventListenerMID = require('./listeners/IbusEventListenerMID.js');
     
-    var cfg = new Config();
+    var cfg = new Config(process.argv[5]);
     
     // config
     var device = process.argv[2];

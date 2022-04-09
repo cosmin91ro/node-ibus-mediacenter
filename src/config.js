@@ -1,15 +1,17 @@
 ﻿var fs = require('fs');
 
-module.exports = function () {
-    return new config();
+module.exports = function (handeVolumeCommands) {
+    return new config(handeVolumeCommands);
 }
 
-function config() {
+function config(handeVolumeCommands) {
     var _self = this;
     var filename = "./config.json";
     // Private state variables
     var cfg = {};
     var saved = "";
+
+    _self.handeVolumeCommands = handeVolumeCommands === '--handle-volume-commands';
     
     try {
         saved = fs.re.readFileSync(filename)
@@ -21,7 +23,8 @@ function config() {
             currentListType: "dir",
             dirCurrent: {},
             plsCurrent: {},
-            queCurrent: {}
+            queCurrent: {},
+            handeVolumeCommands: handeVolumeCommands === '--handle-volume-commands'
         };
         fs.writeFile(filename, JSON.stringify(cfg), function(err, result) {
             if(err) console.log('error', err);
