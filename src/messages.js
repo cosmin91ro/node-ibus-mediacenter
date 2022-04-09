@@ -33,9 +33,8 @@
         ph7090_5_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x06, 0x05]) },
         ph7090_6_press: { src: 0x68 , dst: 0x18, msg: new Buffer.from([0x38, 0x06, 0x06]) },
         ph7090_mode_radio: { src: 0x68, dst: 0x18, msg: new Buffer.from([0x38, 0x01, 0x00])},
-        // TODO: update the dst here, it's wrong
-        pause: {src: 68, dst: 0xff, msg: new Buffer.from([0x4a, 0x00])},
-        unpause: {src: 68, dst: 0xff, msg: new Buffer.from([0x4a, 0xff])},
+        pause: {src: 68, dst: 0xf0, msg: new Buffer.from([0x4a, 0x00])},
+        unpause: {src: 68, dst: 0xf0, msg: new Buffer.from([0x4a, 0xff])},
 
         // OnBoardMonitor
         volume_up: { src: 0xf0, dst: 0x68, msg: new Buffer.from([0x32, 0x11])},
@@ -133,8 +132,8 @@
 // f003684886 - volume knob up
 // f003684846 - volume knob press and hold
 
-// 6802f4a00 - pause
-// 6802f4aff - unpause
+// 6802f04a00 - pause
+// 6802f04aff - unpause
 
 // 680418380801 - potential Random ON
 

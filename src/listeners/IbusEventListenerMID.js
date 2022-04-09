@@ -116,14 +116,16 @@ var IbusEventListenerMID = function (config) {
                 else if (tools.compareMsg(data, msgs.messages.replace_rad2midCDbuttons)) {
                     _self.midDevice.showMenu1();
                 }
-            } else if (tools.compareMsg(data, msgs.messages.pause)) {
-                _self.currentPlaylist.currentTime(function (isPlaying) {
-                    if (isPlaying) _self.currentPlaylist.pauseToggle();
-                });
-            } else if (tools.compareMsg(data, msgs.messages.unpause)){
-                _self.currentPlaylist.currentTime(function (isPlaying) {
-                    if (!isPlaying) _self.currentPlaylist.pauseToggle();
-                });
+            } else if (ibusDevices.getDeviceName(data.dst) === 'OnBoardMonitor - f0') {
+                if (tools.compareMsg(data, msgs.messages.pause)) {
+                    _self.currentPlaylist.currentTime(function (isPlaying) {
+                        if (isPlaying) _self.currentPlaylist.pauseToggle();
+                    });
+                } else if (tools.compareMsg(data, msgs.messages.unpause)){
+                    _self.currentPlaylist.currentTime(function (isPlaying) {
+                        if (!isPlaying) _self.currentPlaylist.pauseToggle();
+                    });
+                }
             }
         }
         else if (parseInt(data.src, 16) == msgs.devices.mid) { //From MID
@@ -174,10 +176,11 @@ var IbusEventListenerMID = function (config) {
             if (ibusDevices.getDeviceName(data.dst) === 'Radio - 68') {
                 if (tools.compareMsg(data, msgs.messages.volume_up)) {
                    log.debug('volume up ...');
-                   _self.currentPlaylist.mpc.volumeUp();
+                   // TODO will handle volume based on a process.argv
+                   //_self.currentPlaylist.mpc.volumeUp();
                 } else if (tools.compareMsg(data, msgs.messages.volume_down)) {
                     log.debug('volume down ...');
-                    _self.currentPlaylist.mpc.volumeDown();
+                    //_self.currentPlaylist.mpc.volumeDown();
                 }
             }
         } else if (ibusDevices.getDeviceName(data.src) === 'InstrumentClusterElectronics - 80') {
