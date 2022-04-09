@@ -77,8 +77,24 @@ var IbusEventListenerMID = function (config) {
         if (parseInt(data.src, 16) == msgs.devices.radio) { //From radio
             if (parseInt(data.dst, 16) == msgs.devices.cd_changer) { //To CD changer
                 if (tools.compare(data, msgs.messages.rad_cdReqPlay)) {
+                    // _self.currentPlaylist.isPaused(function (isPaused) {
+                    //     if (isPaused) {
+                    //         _self.currentPlaylist.pauseToggle();
+                    //     } else { // playing or stopped
+                    //         _self.currentPlaylist.currentTime(function (isPlaying) {
+                    //             if (!isPlaying) _self.currentPlaylist.play();
+                    //         });
+                    //     }
+                    // });
 
-                    _self.currentPlaylist.play();
+                    _self.currentPlaylist.currentTime(function (time) {
+                        if (!time) _self.currentPlaylist.play();
+                        else {
+                            _self.currentPlaylist.isPaused(function (isPaused){
+                                if (isPaused) _self.currentPlaylist.pauseToggle();
+                            });
+                        }
+                    });
                     
 
                 } else if (tools.compareMsg(data, msgs.messages.rad_cdPool)) {
@@ -120,12 +136,12 @@ var IbusEventListenerMID = function (config) {
                 }
             } else if (ibusDevices.getDeviceName(data.dst) === 'OnBoardMonitor - f0') {
                 if (tools.compareMsg(data, msgs.messages.pause)) {
-                    _self.currentPlaylist.currentTime(function (isPlaying) {
-                        if (isPlaying) _self.currentPlaylist.pauseToggle();
+                    _self.currentPlaylist.isPaused(function (isPaused) {
+                        if (!isPaused) _self.currentPlaylist.pauseToggle();
                     });
                 } else if (tools.compareMsg(data, msgs.messages.unpause)){
-                    _self.currentPlaylist.currentTime(function (isPlaying) {
-                        if (!isPlaying) _self.currentPlaylist.pauseToggle();
+                    _self.currentPlaylist.isPaused(function (isPaused) {
+                        if (isPaused) _self.currentPlaylist.pauseToggle();
                     });
                 }
             }
