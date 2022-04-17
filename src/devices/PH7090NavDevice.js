@@ -17,11 +17,6 @@ var PH7090NavDevice = function(ibusInterface) {
     this.showStatus = showStatus;
     this.updateScreen = updateScreen;
 
-    // events
-
-    // local data
-
-    // implementation
     function init() {
 
     }

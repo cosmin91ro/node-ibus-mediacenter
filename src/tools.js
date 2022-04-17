@@ -188,11 +188,11 @@ module.exports = {
                 }
             }
         }
-        log.info(`[IbusPacketReceived] Id: 	        ${pkt.id}`);
-        log.info(`[IbusPacketReceived] From: 	        ${IbusDevices.getDeviceName(pkt.src)}`);
-        log.info(`[IbusPacketReceived] To: 	        ${IbusDevices.getDeviceName(pkt.dst)}`);
-        log.info(`[IbusPacketReceived] Message:          ${pkt.msg}`);
-        log.info(clc.yellow(`[IbusPacketReceived] Message (text):   ${pkt.msg.toString()}\n`));
+        log.info(`[IbusPacket] Id: 	        ${pkt.id}`);
+        log.info(`[IbusPacket] From: 	        ${IbusDevices.getDeviceName(pkt.src)}`);
+        log.info(`[IbusPacket] To: 	        ${IbusDevices.getDeviceName(pkt.dst)}`);
+        log.info(`[IbusPacket] Message:          ${pkt.msg}`);
+        log.info(clc.yellow(`[IbusPacket] Message (text):   ${pkt.msg.toString()}\n`));
     },
     
     log

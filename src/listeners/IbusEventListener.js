@@ -9,7 +9,7 @@ var IbusEventClient = function () {
     
     // exposed data
     this.init = init;
-    this.deviceName = 'IbusEventClient';
+    this.deviceName = 'IbusEventListener';
     this.ibusInterface = {};
     this.remoteControlClient = {};
     this.remoteControlClients = [];
@@ -38,7 +38,7 @@ var IbusEventClient = function () {
     }
     
     function onData(data) {
-        // log.debug('[IbusEventListener] ', data);
+        log.debug('[IbusEventListener] ', data);
         
         var cmpData = compareify(data.src, data.dst, data.msg);
         
@@ -166,7 +166,6 @@ var IbusEventClient = function () {
             // 49 8n - rotate right 1..9
             repeat(_self.remoteControlClients['xbmc'].up, 4);
         }
-
     }
     
     function compareify(src, dst, msg) {

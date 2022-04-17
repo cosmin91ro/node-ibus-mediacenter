@@ -11,7 +11,7 @@ var IbusEventListenerMID = function (config) {
     
     var _self = this;
     this.config = config;
-    this.deviceName = 'IbusEventClientMID';
+    this.deviceName = 'IbusEventListenerMID';
     this.ibusInterface = {};
     this.cdChangerDevice = {};
     this.midDevice = {};

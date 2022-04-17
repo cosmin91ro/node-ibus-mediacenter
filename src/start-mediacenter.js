@@ -23,40 +23,31 @@ if (cluster.isMaster) {
 
     var Config = require('./config.js');
     var IbusInterface = require('ibus').IbusInterface;
-    var IbusDevices = require('ibus').IbusDevices;
-
     var CDChangerDevice = require('./devices/CDChangerDevice.js')
     var MidDevice = require('./devices/MidDevice.js');
-    var IkeDevice = require('./devices/IkeDevice.js');
-    var IbusDebuggerDevice = require('./devices/IbusDebuggerDevice.js');
     var PH7090NavDevice = require('./devices/PH7090NavDevice.js');
-
     var IbusEventListenerMID = require('./listeners/IbusEventListenerMID.js');
     
     var cfg = new Config(process.argv[5]);
     
-    // config
     var device = process.argv[2];
-    
-    // communication interface
     var ibusInterface = new IbusInterface(device);
 
-    // Ibus debugger
-    var ibusDebuggerDevice = new IbusDebuggerDevice();
+    //Devices
 
     // MID Multi Information Display Device
     var midDevice = new MidDevice(ibusInterface);
     
     // CD Changer Device
     var cdcDevice = new CDChangerDevice(ibusInterface);
-    
-    // IKE Instrument Cluster Electronics Device
-    var ikeDevice = new IkeDevice(ibusInterface);
-    
-    // Ibus MID Event Client
-    var ibusEventClientMID = new IbusEventListenerMID(cfg);
 
+    // PH7090 Navigation Display
     var navDisplay = new PH7090NavDevice(ibusInterface);
+
+    // Listeners
+
+    // Ibus MID Event Client
+    var ibusEventListenerMID = new IbusEventListenerMID(cfg);
 
     // events
     process.on('SIGINT', onSignalInt);
@@ -74,28 +65,15 @@ if (cluster.isMaster) {
         process.exit(1);
     }
 
-    var isShuttingDown = false;
-
-    function onUncaughtException(err) {
-
-        log.error('[exception-handler] caught: ', err);
-        log.alert('Node NOT exiting...');
-    }
-
     function startup(successFn) {
         tools.init();
-        // init ibus serial interface
         ibusInterface.startup();
 
-        // ibus debugger
-        ibusDebuggerDevice.init(ibusInterface); //, ['18', '68', '0c']);
-
         cdcDevice.init(ibusInterface);
-        ikeDevice.init(ibusInterface);
         midDevice.init(ibusInterface);
+        navDisplay.init(ibusInterface);
 
-        // init mid event client
-        ibusEventClientMID.init(ibusInterface, cdcDevice, midDevice, navDisplay);
+        ibusEventListenerMID.init(ibusInterface, cdcDevice, midDevice, navDisplay);
     }
 
     function shutdown(successFn) {
