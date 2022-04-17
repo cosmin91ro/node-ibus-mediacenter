@@ -132,7 +132,7 @@ var Playlist = function (config) {
         if (!_self.current) {
             _self.current = _self.items[0];
         }
-        log.info('Current track:', _self.current);
+        log.info(`Current track: ${_self.current.filename}`);
     }
 
     function loadFiles(itemPath, cd, track) {

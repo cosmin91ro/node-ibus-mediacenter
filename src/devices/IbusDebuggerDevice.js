@@ -55,31 +55,13 @@ var IbusDebuggerDevice = function () {
     }
     
     function onData(data) {
-        //printReadableMessage(data);
-    }
-
-    function printReadableMessage(data) {
-        if ((_self.listenDeviceIds.length === 0) || (_.find(_self.listenDeviceIds, function (val) {
-            return val === data.dst;
-        }))) {
-            var displayLen = data.msg.length + 2;
-            var msg = 'Received   :  <Buffer ' + (data.src.toString(16).length < 2 ? "0":"") + (data.src).toString(16) + ' ' + ((displayLen).toString(16).length<2 ? "0":"") + (displayLen).toString(16) + ' ' + (data.dst.toString(16).length < 2 ? "0":"") + (data.dst).toString(16);
-            for (var i = 0; i < data.msg.length; i++) {
-                msg += ' ' + ((data.msg[i] < 0x10) ? '0' : '') + data.msg[i].toString(16);
+        if (process.env.LOG_ONLY) {
+            if (data.src === process.env.LOG_ONLY || data.dst === process.env.LOG_ONLY) {
+                tools.logIbusPacket(data);
             }
-            
-            var known = undefined; //findMessage(data);
-            if (known != undefined) {
-                //log.info('[IbusDebuggerDevice]*' + msg + "> '" + known.key + "' " + tools.intToAscii(data.msg)); // data);
-            }
-            else {
-                log.info('[IbusDebuggerDevice] ' + msg + "> '" + tools.intToAscii(data.msg.slice()) + "'"); // data);
-            }
-            //console.log('// ' + data.msg.toString('ascii'));
-            //console.log('ibusInterface.sendMessage({src: 0x' + data.src + ',dst: 0x' + data.dst + ', msg: new Buffer.from([' + msg.substr(2), '])});');
+        } else {
+            tools.logIbusPacket(data);
         }
-       //log.info('[IbusDebuggerDevice All] ',data.src + '.' + data.dst + '.' + data.msg + ' -> ' + data.msg.toString('ascii')); // data);
-   
     }
     
     function findMessage(data) {

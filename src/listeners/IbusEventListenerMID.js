@@ -22,7 +22,6 @@ var IbusEventListenerMID = function (config) {
         _self.ibusInterface = ibusInterface;
         _self.cdChangerDevice = cdcDevice;
         _self.midDevice = midDevice;
-        _self.navDisplay = navDisplay;
         
         _self.title1 = "";
         _self.title2 = "";
@@ -37,33 +36,6 @@ var IbusEventListenerMID = function (config) {
         ibusInterface.on('data', onData);
     }
     
-    function onStatusUpdate(data) {
-        _self.title1 = data.title1;
-        _self.title2 = data.title2;
-        log.info(clc.yellow(`Playing ${data.title2} - track ${data.index + 1}`));
-        log.info(JSON.stringify(data));
-        writeStatus(data);
-
-        _self.navDisplay.setTitle(data.title1);
-    }
-
-    function writeStatus(status) {
-        const statusFile = 'status';
-        const st = `${status.title2}-${status.index + 1}`;
-        fs.writeFile(statusFile, st, function (err) {
-            if (err) 
-                log.error(`Could not save status to file: ${err}`);
-            });
-        console.info(`Status ${st} written to file`);
-    }
-
-    function changeCD(cd) {
-        if (_self.currentPlaylist.current.title2 === cd)
-            return;
-        _self.currentPlaylist.loadPlaylist(null, cd, 1);
-        _self.currentPlaylist.play();
-    }
-    
     function onData(data) {
         if (process.env.LOG_ONLY) {
             if (data.src === process.env.LOG_ONLY || data.dst === process.env.LOG_ONLY) {
@@ -75,50 +47,7 @@ var IbusEventListenerMID = function (config) {
         
         if (parseInt(data.src, 16) == msgs.devices.radio) { //From radio
             if (parseInt(data.dst, 16) == msgs.devices.cd_changer) { //To CD changer
-                if (tools.compare(data, msgs.messages.rad_cdReqPlay)) {
-                    // _self.currentPlaylist.isPaused(function (isPaused) {
-                    //     if (isPaused) {
-                    //         _self.currentPlaylist.pauseToggle();
-                    //     } else { // playing or stopped
-                    //         _self.currentPlaylist.currentTime(function (isPlaying) {
-                    //             if (!isPlaying) _self.currentPlaylist.play();
-                    //         });
-                    //     }
-                    // });
-
-                    _self.currentPlaylist.currentTime(function (time) {
-                        if (!time) _self.currentPlaylist.play();
-                        else {
-                            _self.currentPlaylist.isPaused(function (isPaused){
-                                if (isPaused) _self.currentPlaylist.pauseToggle();
-                            });
-                        }
-                    });
-                    
-
-                } else if (tools.compareMsg(data, msgs.messages.rad_cdPool)) {
-                    _self.cdChangerDevice.respondAsCDplayer();
-                } else if (tools.compareMsg(data, msgs.messages.ph7090_arrow_left)) {
-                    _self.currentPlaylist.previous();
-                } else if (tools.compareMsg(data, msgs.messages.ph7090_arrow_right)) {
-                    _self.currentPlaylist.next();
-                } else if (tools.compareMsg(data, msgs.messages.ph7090_1_press)) {
-                    changeCD('CD1');
-                } else if (tools.compareMsg(data, msgs.messages.ph7090_2_press)) {
-                    changeCD('CD2');
-                } else if (tools.compareMsg(data, msgs.messages.ph7090_3_press)) {
-                    changeCD('CD3');
-                } else if (tools.compareMsg(data, msgs.messages.ph7090_4_press)) {
-                    changeCD('CD4');
-                } else if (tools.compareMsg(data, msgs.messages.ph7090_5_press)) {
-                    changeCD('CD5');
-                } else if (tools.compareMsg(data, msgs.messages.ph7090_6_press)) {
-                    changeCD('CD6');
-                } else if (tools.compareMsg(data, msgs.messages.ph7090_mode_radio)) {
-                    _self.currentPlaylist.isPaused(function (isPaused) {
-                        if (!isPaused) _self.currentPlaylist.stop(true);
-                    });
-                }
+                // Handled in DCChangerDevice.js
             }
             else if (parseInt(data.dst, 16) == msgs.devices.mid) { //To MID
                 if (tools.startsWith(data, msgs.messageParts.mid_buttons_for_replaceStart) 
@@ -134,15 +63,7 @@ var IbusEventListenerMID = function (config) {
                     _self.midDevice.showMenu1();
                 }
             } else if (ibusDevices.getDeviceName(data.dst) === 'OnBoardMonitor - f0') {
-                if (tools.compareMsg(data, msgs.messages.pause)) {
-                    _self.currentPlaylist.isPaused(function (isPaused) {
-                        if (!isPaused) _self.currentPlaylist.pauseToggle();
-                    });
-                } else if (tools.compareMsg(data, msgs.messages.unpause)){
-                    _self.currentPlaylist.isPaused(function (isPaused) {
-                        if (isPaused) _self.currentPlaylist.pauseToggle();
-                    });
-                }
+                // Handled in OnBoardMonitor.js
             }
         }
         else if (parseInt(data.src, 16) == msgs.devices.mid) { //From MID
@@ -182,29 +103,15 @@ var IbusEventListenerMID = function (config) {
         }
         else if (parseInt(data.src, 16) == msgs.devices.mfl) { //From MFL
             if (parseInt(data.dst, 16) == msgs.devices.radio) { //To radio
-                if (tools.compareMsg(data, msgs.messages.previous_press)) {
-                    _self.currentPlaylist.previous();
-                }
-                else if (tools.compareMsg(data, msgs.messages.next_press)) {
-                    _self.currentPlaylist.next();
-                }
+                // Handled in Radio.js
             }
         } else if (ibusDevices.getDeviceName(data.src) === 'OnBoardMonitor - f0') {
             if (ibusDevices.getDeviceName(data.dst) === 'Radio - 68') {
-                if (tools.compareMsg(data, msgs.messages.volume_up)) {
-                   if (_self.config.handeVolumeCommands) _self.currentPlaylist.mpc.volumeUp();
-                   else log.info("Volume commands not handleded")
-                } else if (tools.compareMsg(data, msgs.messages.volume_down)) {
-                    log.debug('volume down ...');
-                    if (_self.config.handeVolumeCommands)  _self.currentPlaylist.mpc.volumeDown();
-                   else log.info("Volume commands not handleded")
-                }
+                // Handled in Radio.js
             }
         } else if (ibusDevices.getDeviceName(data.src) === 'InstrumentClusterElectronics - 80') {
             if (ibusDevices.getDeviceName(data.dst) === 'LightControlModule - bf') {
-                if (tools.compareMsg(data, msgs.messages.key_turn_off)) {
-                    _self.currentPlaylist.stop(true);
-                }
+                // Handled in LightControlModule.js
             }
         }
     }

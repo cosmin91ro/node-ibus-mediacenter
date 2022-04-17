@@ -21,39 +21,31 @@ if (cluster.isMaster) {
         process.exit(-1);
     }
 
-    var Config = require('./config.js');
-    var IbusInterface = require('ibus').IbusInterface;
-    var CDChangerDevice = require('./devices/CDChangerDevice.js')
-    var MidDevice = require('./devices/MidDevice.js');
-    var PH7090NavDevice = require('./devices/PH7090NavDevice.js');
-    var IbusEventListenerMID = require('./listeners/IbusEventListenerMID.js');
+    const Config = require('./config.js');
+    const IbusInterface = require('ibus').IbusInterface;
+    const Playlist = require('./media/Playlist');
+    const IbusDebuggerDevice = require('./devices/IbusDebuggerDevice');
+    const CDChangerDevice = require('./devices/CDChangerDevice.js')
+    const PH7090NavDevice = require('./devices/PH7090NavDevice.js');
+    const LightControlModule = require('./devices/LightControlModule');
+    const OnBoardMonitor = require('./devices/OnBoardMonitor');
+    const Radio = require('./devices/Radio');
     
     var cfg = new Config(process.argv[5]);
     
     var device = process.argv[2];
     var ibusInterface = new IbusInterface(device);
 
-    //Devices
-
-    // MID Multi Information Display Device
-    var midDevice = new MidDevice(ibusInterface);
-    
-    // CD Changer Device
+    var ibusDebuggerDevice = new IbusDebuggerDevice();
     var cdcDevice = new CDChangerDevice(ibusInterface);
-
-    // PH7090 Navigation Display
     var navDisplay = new PH7090NavDevice(ibusInterface);
+    var lcm = new LightControlModule(ibusInterface);
+    var obm = new OnBoardMonitor(ibusInterface);
+    var radio = new Radio(ibusInterface);
 
-    // Listeners
-
-    // Ibus MID Event Client
-    var ibusEventListenerMID = new IbusEventListenerMID(cfg);
-
-    // events
     process.on('SIGINT', onSignalInt);
     process.on('SIGTERM', onSignalTerm);
 
-    // implementation
     function onSignalInt() {
         shutdown(function() {
             process.exit(1);
@@ -66,20 +58,42 @@ if (cluster.isMaster) {
     }
 
     function startup(successFn) {
-        tools.init();
         ibusInterface.startup();
 
-        cdcDevice.init(ibusInterface);
-        midDevice.init(ibusInterface);
-        navDisplay.init(ibusInterface);
+        playlist = new Playlist(cfg);
+        playlist.init("dir");
+        playlist.on('statusUpdate', onStatusUpdate);
 
-        ibusEventListenerMID.init(ibusInterface, cdcDevice, midDevice, navDisplay);
+        ibusDebuggerDevice.init(ibusInterface);
+        cdcDevice.init(navDisplay, playlist);
+        lcm.init(playlist);
+        obm.init(playlist);
+        radio.init(playlist, cfg);
+        navDisplay.init(ibusInterface);
     }
 
     function shutdown(successFn) {
         ibusInterface.shutdown(function() {
             successFn();
         });
+    }
+
+    function onStatusUpdate(data) {
+        log.info(clc.yellow(`Playing ${data.title2} - track ${data.index + 1}`));
+        log.info(JSON.stringify(data));
+        writeStatus(data);
+
+        navDisplay.setTitle(data.title1);
+    }
+
+    function writeStatus(status) {
+        const statusFile = 'status';
+        const st = `${status.title2}-${status.index + 1}`;
+        fs.writeFile(statusFile, st, function (err) {
+            if (err) 
+                log.error(`Could not save status to file: ${err}`);
+            });
+        log.info(`Status ${st} written to file`);
     }
 
     // main start
