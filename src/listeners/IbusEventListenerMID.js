@@ -1,5 +1,5 @@
-const log = require("log");
-const tools = require("../tools.js");
+const { log } = require('./../tools');
+const tools = require("../tools");
 clc = require('cli-color'),
 msgs = require('../messages.js'),
 Playlist = require('../media/Playlist.js');

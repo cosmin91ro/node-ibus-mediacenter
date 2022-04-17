@@ -2,6 +2,7 @@
   "name": "node-ibus-mediacenter",
   "version": "0.0.0",
   "dependencies": {
+    "callsite": "^1.0.0",
     "cli-color": "*",
     "ibus": "github:cosmin91ro/node-ibus",
     "keypress": "*",
@@ -13,6 +14,7 @@
     "node-mplayer": "0.0.6",
     "onoff": "*",
     "underscore": "*",
+    "winston": "^3.7.2",
     "xbmc": "*"
   }
 }

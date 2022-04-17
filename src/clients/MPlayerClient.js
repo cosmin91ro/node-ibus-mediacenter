@@ -1,5 +1,5 @@
 var cp = require('child_process');
-const log = require("log");
+const { log } = require('./../tools');
 clc = require('cli-color'),
 fs = require('fs'),
 cp = require('child_process'),

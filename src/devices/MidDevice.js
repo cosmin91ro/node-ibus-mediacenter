@@ -1,4 +1,4 @@
-const log = require("log");
+const { log } = require('./../tools');
 tools = require('../tools.js'),
 clc = require('cli-color');
 

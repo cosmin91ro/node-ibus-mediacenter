@@ -1,4 +1,4 @@
-const log = require("log");
+const { log } = require('./../tools');
 clc = require('cli-color');
 
 var PH7090NavDevice = function(ibusInterface) {

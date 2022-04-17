@@ -1,4 +1,4 @@
-const log = require("log");
+const { log } = require('./../tools');
 clc = require('cli-color');
 
 // Display Mk4 CD-text as Mk3 Options

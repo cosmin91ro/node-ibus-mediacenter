@@ -4,7 +4,7 @@ var cp = require('child_process'),
     events = require('events'),
     fs = require('fs'),
     readline = require('readline');
-const log = require("log");
+const { log } = require('./tools');
 
     spawn = cp.spawn;
 

@@ -1,6 +1,7 @@
-const log = require("log");
 var IbusDevices = require('ibus').IbusDevices;
 msgs = require('./messages.js');
+const { createLogger, format, transports } = require("winston");
+
 
 Array.prototype.hexToAscii = function (array) {
     if (!this)
@@ -17,6 +18,28 @@ Array.prototype.hexToAscii = function (array) {
     };
     return result;
 }
+
+const log = createLogger({
+    transports: [
+        new transports.Console({
+            format: format.cli(),
+            handleExceptions: true,
+        }),
+        new transports.File({
+            filename: "logs/main.log",
+            format: format.combine(format.timestamp(), format.json(), format.prettyPrint()),
+        })
+    ],
+    exceptionHandlers: [
+        new transports.File({ 
+            filename: "logs/exceptions.log",
+         })
+    ],
+    defaultMeta: {
+        file: __filename.replace(`${__dirname}/`, ''),
+    },
+    level: process.env.LOG_LEVEL || 'info'
+  });
 
 String.prototype.asciiToHexString = function (string) {
     if (!this)
@@ -165,10 +188,12 @@ module.exports = {
                 }
             }
         }
-        log.info('[IbusPacketReceived]', 'Id: 	        ', pkt.id);
-        log.info('[IbusPacketReceived]', 'From: 	    ', IbusDevices.getDeviceName(pkt.src));
-        log.info('[IbusPacketReceived]', 'To: 	        ', IbusDevices.getDeviceName(pkt.dst));
-        log.info('[IbusPacketReceived]', 'Message:      ', pkt.msg);
-        log.info(clc.yellow('[IbusPacketReceived]', 'Message (text):', pkt.msg.toString(), '\n'));
-    }
+        log.info(`[IbusPacketReceived] Id: 	        ${pkt.id}`);
+        log.info(`[IbusPacketReceived] From: 	        ${IbusDevices.getDeviceName(pkt.src)}`);
+        log.info(`[IbusPacketReceived] To: 	        ${IbusDevices.getDeviceName(pkt.dst)}`);
+        log.info(`[IbusPacketReceived] Message:          ${pkt.msg}`);
+        log.info(clc.yellow(`[IbusPacketReceived] Message (text):   ${pkt.msg.toString()}\n`));
+    },
+    
+    log
 }
