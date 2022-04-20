@@ -38,7 +38,7 @@ var Radio = function (ibusInterface) {
         } else if (tools.compareMsg(data, msgs.messages.ph7090_1_press)) {
             _self.cdc.changeCD('CD1');
         } else if (tools.compareMsg(data, msgs.messages.ph7090_2_press)) {
-            _self.cdc.schangeCD('CD2');
+            _self.cdc.changeCD('CD2');
         }
     }
 };
