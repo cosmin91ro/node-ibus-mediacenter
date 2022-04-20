@@ -15,6 +15,7 @@
     "onoff": "*",
     "underscore": "*",
     "winston": "^3.7.2",
+    "winston-daily-rotate-file": "^4.6.1",
     "xbmc": "*"
   }
 }
