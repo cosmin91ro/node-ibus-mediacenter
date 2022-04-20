@@ -68,7 +68,7 @@ if (cluster.isMaster) {
         cdcDevice.init(navDisplay, playlist);
         lcm.init(playlist);
         obm.init(playlist);
-        radio.init(playlist, cfg);
+        radio.init(playlist, cfg, cdcDevice);
         navDisplay.init(ibusInterface);
     }
 
