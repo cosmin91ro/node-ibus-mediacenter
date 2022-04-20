@@ -1,3 +1,4 @@
+const loggerPrototype = require('log/lib/private/logger-prototype');
 const { log } = require('./../tools');
 msgs = require('../messages.js'),
 clc = require('cli-color');
@@ -29,8 +30,18 @@ var CDChangerDevice = function (ibusInterface) {
     function announceDevice() {
         if (_self.announceNeeded) {
             ibusInterface.sendMessage(msgs.messages.cdc_announceCd);
-            if (_self.currentPlaylist && _self.currentPlaylist.current)
-                _self.navDisplay.setTitle(_self.currentPlaylist.current.title1);
+            if (_self.currentPlaylist)
+                _self.currentPlaylist.currentTime(function (time) {
+                    if (time) {
+                        _self.currentPlaylist.isPaused(function (isPaused){
+                            if (!isPaused){
+                                _self.navDisplay.setTitle(_self.currentPlaylist.current.title1);
+                                log.debug(`Title ${_self.currentPlaylist.current.title1} sent to nav display`);
+                            }
+                        });
+                    }
+                });
+                
             setTimeout(function () {
                 if(_self.announceNeeded){
                     announceDevice();
@@ -45,8 +56,7 @@ var CDChangerDevice = function (ibusInterface) {
     }
 
     function sendPlaying0101() {
-        ibusInterface.sendMessage(msgs.messages.cdc_playingXX);
-        log.info(clc.yellow(`'CD TR' sent to radio`));
+        sendPlayingXX(1, 1);
     }
     
     function sendPlayingXX(cdNo, trackNo) {
@@ -59,6 +69,11 @@ var CDChangerDevice = function (ibusInterface) {
 
     function onData(data) {
         if (parseInt(data.dst, 16) != msgs.devices.cd_changer) return;
+
+        if (tools.compareMsg(data, msgs.messages.rad_cdReqParams) || 
+            tools.compare(data, msgs.messages.rad_cdReqPlay)) {
+                sendPlaying0101();
+            }
 
         if (tools.compare(data, msgs.messages.rad_cdReqPlay)) {
             _self.currentPlaylist.currentTime(function (time) {
@@ -95,7 +110,7 @@ var CDChangerDevice = function (ibusInterface) {
     }
 
     function changeCD(cd) {
-        // saving current CD to rollback in case the new cd is not found
+        // saving current CD and track to rollback in case the new cd is not found
         var currentCD = null;
         var currentTrack = null;
         if (_self.currentPlaylist && 
@@ -111,7 +126,7 @@ var CDChangerDevice = function (ibusInterface) {
         
         if (_self.currentPlaylist.items.length > 0) _self.currentPlaylist.play();
         else {
-            _self.currentPlaylist.emit('statusUpdate', {title2: 'NODISC'});
+            _self.navDisplay.setTitle('NO DISC');
             _self.currentPlaylist.loadPlaylist(null, currentCD, currentTrack);
         }
     }
