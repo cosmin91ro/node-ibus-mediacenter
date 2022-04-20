@@ -41,9 +41,9 @@ var CDChangerDevice = function (ibusInterface) {
 
     function keepSongTitleOnScreen() {
         if (_self.currentPlaylist) {
-            _self.currentPlaylist.currentTime(function (time) {
+            _self.currentPlaylist.songProgress(function (time) {
                 if (time) {
-                    log.debug(`song time = ${time}`);
+                    log.debug(`song progress = ${time}%`);
                     _self.currentPlaylist.isPaused(function (isPaused){
                         if (!isPaused){
                             _self.navDisplay.setTitle(_self.currentPlaylist.current.title1);
@@ -89,7 +89,7 @@ var CDChangerDevice = function (ibusInterface) {
             }
 
         if (tools.compare(data, msgs.messages.rad_cdReqPlay)) {
-            _self.currentPlaylist.currentTime(function (time) {
+            _self.currentPlaylist.songProgress(function (time) {
                 if (!time) _self.currentPlaylist.play();
                 else {
                     _self.currentPlaylist.isPaused(function (isPaused){

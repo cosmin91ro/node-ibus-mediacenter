@@ -95,7 +95,7 @@ var IbusEventListenerMID = function (config) {
                     _self.currentPlaylist.seek(10);
                 }
                 else if (tools.compareMsg(data, msgs.messages.mid_m_press)) {
-                    _self.currentPlaylist.currentTime(function (data) {
+                    _self.currentPlaylist.songProgress(function (data) {
                         log.info("............." + data);
                     });
                 }

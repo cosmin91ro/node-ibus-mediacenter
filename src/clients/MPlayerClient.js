@@ -121,7 +121,7 @@ var MPlayerClient = function () {
     
     function info(callback) {
         if (_self.childProc !== null) {
-            _self.rl.question("get_time_pos\n", function (answer) {
+            _self.rl.question("pausing_keep_force get_property percent_pos\n", function (answer) {
                 if (answer.split('=')[1] !== undefined) {
                     callback(answer.split('=')[1]);
                 }
