@@ -25,29 +25,36 @@ var CDChangerDevice = function (ibusInterface) {
         announceDevice();      
         _self.navDisplay = navDisplay;
         _self.currentPlaylist = playlist;
+        keepSongTitleOnScreen();
     }
 
     function announceDevice() {
         if (_self.announceNeeded) {
             ibusInterface.sendMessage(msgs.messages.cdc_announceCd);
-            if (_self.currentPlaylist)
-                _self.currentPlaylist.currentTime(function (time) {
-                    if (time) {
-                        _self.currentPlaylist.isPaused(function (isPaused){
-                            if (!isPaused){
-                                _self.navDisplay.setTitle(_self.currentPlaylist.current.title1);
-                                log.debug(`Title ${_self.currentPlaylist.current.title1} sent to nav display`);
-                            }
-                        });
-                    }
-                });
-                
             setTimeout(function () {
                 if(_self.announceNeeded){
                     announceDevice();
                 }
             }, 3000);
         }
+    }
+
+    function keepSongTitleOnScreen() {
+        if (_self.currentPlaylist) {}
+            _self.currentPlaylist.currentTime(function (time) {
+                if (time) {
+                    _self.currentPlaylist.isPaused(function (isPaused){
+                        if (!isPaused){
+                            _self.navDisplay.setTitle(_self.currentPlaylist.current.title1);
+                            log.debug(`Title ${_self.currentPlaylist.current.title1} sent to nav display`);
+                        }
+                    });
+                }
+            });
+        }
+        setTimeout(function () {
+            keepSongTitleOnScreen();
+        }, 3000);
     }
     
     function respondAsCDplayer() {
