@@ -133,7 +133,7 @@ var Playlist = function (config) {
 
     function loadPlaylist(itemPath, cd, track) {
         loadFiles(itemPath, cd, track);
-        log.debug(_self.items);
+        log.debug(`Loaded ${_self.items.length} songs`);
         if (_self.items.length == 0) {
             log.error('No items here');
         } else {

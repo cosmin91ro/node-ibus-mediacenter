@@ -96,6 +96,7 @@ var MPlayerClient = function () {
     
     function pause() {
         if (_self.childProc !== null) {
+            log.debug('toggling pause ...');
             _self.childProc.stdin.write('pause\n');
         }
     }
