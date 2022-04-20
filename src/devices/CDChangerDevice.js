@@ -14,6 +14,7 @@ var CDChangerDevice = function (ibusInterface) {
     this.respondAsCDplayer = respondAsCDplayer;
     this.sendPlayingXX = sendPlayingXX;
     this.sendPlaying0101 = sendPlaying0101;
+    this.changeCD = changeCD;
 
     ibusInterface.on('data', onData);
 
