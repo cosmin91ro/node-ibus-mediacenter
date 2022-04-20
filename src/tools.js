@@ -194,11 +194,11 @@ module.exports = {
                 }
             }
         }
-        var msg  = `[IbusPacket] Id: 	        ${pkt.id}\n`;
+        var msg  = `\n[IbusPacket] Id: 	        ${pkt.id}\n`;
         msg += `[IbusPacket] Id: 	        ${pkt.id}\n`;
         msg += `[IbusPacket] From: 	        ${IbusDevices.getDeviceName(pkt.src)}\n`;
         msg += `[IbusPacket] To: 	        ${IbusDevices.getDeviceName(pkt.dst)}\n`;
-        msg += `[IbusPacket] Message:          ${pkt.msg.toString('hex')}\n`;
+        msg += `[IbusPacket] Message:           ${pkt.msg.toString('hex')}\n`;
         msg += `[IbusPacket] Message (text):   ${pkt.msg.toString()}`;
         log.info(msg);
     },
