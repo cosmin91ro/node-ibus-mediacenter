@@ -43,6 +43,7 @@ var CDChangerDevice = function (ibusInterface) {
         if (_self.currentPlaylist) {
             _self.currentPlaylist.currentTime(function (time) {
                 if (time) {
+                    log.debug(`song time = ${time}`);
                     _self.currentPlaylist.isPaused(function (isPaused){
                         if (!isPaused){
                             _self.navDisplay.setTitle(_self.currentPlaylist.current.title1);
@@ -69,9 +70,14 @@ var CDChangerDevice = function (ibusInterface) {
     function sendPlayingXX(cdNo, trackNo) {
         var pkt = msgs.messages.cdc_playingXX;
         const append = Buffer.from([cdNo, trackNo]);
-        pkt.msg = Buffer.concat([pkt.msg, append]);
+        if (cdNo && trackNo)
+            pkt.msg = Buffer.concat([pkt.msg, append]);
         ibusInterface.sendMessage(pkt);
         log.info(clc.yellow(`'CD${cdNo} TR${trackNo}' sent to radio`));
+    }
+
+    function sendPlayingNothing(){
+        sendPlayingXX();
     }
 
     function onData(data) {
@@ -79,7 +85,7 @@ var CDChangerDevice = function (ibusInterface) {
 
         if (tools.compareMsg(data, msgs.messages.rad_cdReqParams) || 
             tools.compare(data, msgs.messages.rad_cdReqPlay)) {
-                sendPlaying0101();
+                sendPlayingNothing();
             }
 
         if (tools.compare(data, msgs.messages.rad_cdReqPlay)) {
