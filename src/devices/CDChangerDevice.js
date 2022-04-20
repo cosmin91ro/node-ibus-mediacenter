@@ -40,7 +40,7 @@ var CDChangerDevice = function (ibusInterface) {
     }
 
     function keepSongTitleOnScreen() {
-        if (_self.currentPlaylist) {}
+        if (_self.currentPlaylist) {
             _self.currentPlaylist.currentTime(function (time) {
                 if (time) {
                     _self.currentPlaylist.isPaused(function (isPaused){
