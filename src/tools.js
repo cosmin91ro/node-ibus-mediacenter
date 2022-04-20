@@ -194,11 +194,13 @@ module.exports = {
                 }
             }
         }
-        log.info(`[IbusPacket] Id: 	        ${pkt.id}`);
-        log.info(`[IbusPacket] From: 	        ${IbusDevices.getDeviceName(pkt.src)}`);
-        log.info(`[IbusPacket] To: 	        ${IbusDevices.getDeviceName(pkt.dst)}`);
-        log.info(`[IbusPacket] Message:          ${pkt.msg}`);
-        log.info(clc.yellow(`[IbusPacket] Message (text):   ${pkt.msg.toString()}\n`));
+        var msg  = `[IbusPacket] Id: 	        ${pkt.id}\n`;
+        msg += `[IbusPacket] Id: 	        ${pkt.id}\n`;
+        msg += `[IbusPacket] From: 	        ${IbusDevices.getDeviceName(pkt.src)}\n`;
+        msg += `[IbusPacket] To: 	        ${IbusDevices.getDeviceName(pkt.dst)}\n`;
+        msg += `[IbusPacket] Message:          ${pkt.msg.toString('hex')}\n`;
+        msg += `[IbusPacket] Message (text):   ${pkt.msg.toString()}`;
+        log.info(msg);
     },
 
     log
