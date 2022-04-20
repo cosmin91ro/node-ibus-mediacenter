@@ -14,9 +14,10 @@ var Radio = function (ibusInterface) {
     ibusInterface.on('data', onData);
 
     // implementation
-    function init(playlist, config) {
+    function init(playlist, config, cdc) {
         _self.currentPlaylist = playlist;
         _self.config = config;
+        _self.cdc = cdc;
     }
 
     function onData(data) {
@@ -34,6 +35,10 @@ var Radio = function (ibusInterface) {
         }
         else if (tools.compareMsg(data, msgs.messages.next_press)) {
             _self.currentPlaylist.next();
+        } else if (tools.compareMsg(data, msgs.messages.ph7090_1_press)) {
+            _self.cdc.changeCD('CD1');
+        } else if (tools.compareMsg(data, msgs.messages.ph7090_2_press)) {
+            _self.cdc.changeCD('CD2');
         }
     }
 };
