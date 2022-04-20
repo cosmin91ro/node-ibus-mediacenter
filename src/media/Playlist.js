@@ -1,5 +1,6 @@
 const { log } = require('./../tools');
 const path = require('path');
+const CDChangerDevice = require('../devices/CDChangerDevice');
 
 clc = require('cli-color'),
 Config = require('../config.js'),
@@ -103,6 +104,15 @@ var Playlist = function (config) {
 
         if (_self.typeName == "dir") {
             loadPlaylist(null, cd, track);
+            if (_self.items.length == 0) {
+                var cds = ['CD1','CD2','CD3','CD4','CD5','CD6'];
+                cds.splice(cds.indexOf(cd),1);
+                for (let cd of cds) {
+                    loadPlaylist(null, cd, 1);
+                    if (_self.items.length > 0) break;
+                }
+            }
+            if (_self.items.length == 0) _self.emit('statusUpdate', {title2: 'NODISC'});
 
             _self.parsingItems = JSON.parse(JSON.stringify(_self.items));
             for (var i = _self.parsingItems.length - 1; i >= 0; i--) {
@@ -123,21 +133,20 @@ var Playlist = function (config) {
 
     function loadPlaylist(itemPath, cd, track) {
         loadFiles(itemPath, cd, track);
-        log.info(clc.blue("Files loaded"));
         log.debug(_self.items);
         if (_self.items.length == 0) {
             log.error('No items here');
+        } else {
+            log.info(clc.blue("Files loaded"));
+            if (!_self.current) {
+                _self.current = _self.items[0];
+            }
         }
-
-        if (!_self.current) {
-            _self.current = _self.items[0];
-        }
-        log.info(`Current track: ${_self.current.filename}`);
+        if (_self.current) log.info(`Current track: ${_self.current.filename}`);
     }
 
     function loadFiles(itemPath, cd, track) {
-        if (cd)
-        log.info(`Loading songs from ${cd}`);
+        if (cd) log.info(`Loading songs from ${cd}`);
         _self.items = [];
         if (!itemPath) { itemPath = _self.cfg.mediaPath; }
 

@@ -79,6 +79,10 @@ if (cluster.isMaster) {
     }
 
     function onStatusUpdate(data) {
+        if (data.title2 === 'NODISC'){
+            navDisplay.setTitle('NO DISC');
+            return;
+        }
         log.info(clc.yellow(`Playing ${data.title2} - track ${data.index + 1}`));
         log.info(JSON.stringify(data));
         writeStatus(data);

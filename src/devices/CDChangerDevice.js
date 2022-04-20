@@ -28,6 +28,8 @@ var CDChangerDevice = function (ibusInterface) {
     function announceDevice() {
         if (_self.announceNeeded) {
             ibusInterface.sendMessage(msgs.messages.cdc_announceCd);
+            if (_self.currentPlaylist && _self.currentPlaylist.current)
+                _self.navDisplay.setTitle(_self.currentPlaylist.current.title1);
             setTimeout(function () {
                 if(_self.announceNeeded){
                     announceDevice();
@@ -92,10 +94,25 @@ var CDChangerDevice = function (ibusInterface) {
     }
 
     function changeCD(cd) {
+        // saving current CD to rollback in case the new cd is not found
+        var currentCD = null;
+        var currentTrack = null;
+        if (_self.currentPlaylist && 
+            _self.currentPlaylist.current &&
+            _self.currentPlaylist.current.title2) {
+                currentCD = _self.currentPlaylist.current.title2
+                currentTrack = _self.currentPlaylist.current.index + 1;
+            }
         if (_self.currentPlaylist.current.title2 === cd)
             return;
+
         _self.currentPlaylist.loadPlaylist(null, cd, 1);
-        _self.currentPlaylist.play();
+        
+        if (_self.currentPlaylist.items.length > 0) _self.currentPlaylist.play();
+        else {
+            _self.currentPlaylist.emit('statusUpdate', {title2: 'NODISC'});
+            _self.currentPlaylist.loadPlaylist(null, currentCD, currentTrack);
+        }
     }
 };
 
