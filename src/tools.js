@@ -35,6 +35,7 @@ const log = createLogger({
             filename: "logs/main-%DATE%.log",
             datePattern: 'YYYY-MM-DDTHH',
             maxSize: '100m',
+            handleExceptions: true,
             format: format.combine(format.timestamp({ format: timezoned }), format.json(), format.prettyPrint()),
         })
     ],

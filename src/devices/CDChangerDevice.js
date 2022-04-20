@@ -67,7 +67,7 @@ var CDChangerDevice = function (ibusInterface) {
                 }
             });
         } else if (tools.compareMsg(data, msgs.messages.rad_cdPool)) {
-            _self.cdChangerDevice.respondAsCDplayer();
+            _self.respondAsCDplayer();
         } else if (tools.compareMsg(data, msgs.messages.ph7090_arrow_left)) {
             _self.currentPlaylist.previous();
         } else if (tools.compareMsg(data, msgs.messages.ph7090_arrow_right)) {
